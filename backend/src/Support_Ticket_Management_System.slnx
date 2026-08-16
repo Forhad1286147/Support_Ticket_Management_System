@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Support_Ticket_Management_System_Api/Support_Ticket.Api.csproj" />
+  <Project Path="Support_Ticket_Management_System_Application/Support_Ticket.Application.csproj" Id="fcadbc76-7138-4dac-b8e2-eb0389c20ad0" />
+  <Project Path="Support_Ticket_Management_System_Domain/Support_Ticket.Domain.csproj" Id="221bc14a-65ae-40fd-821d-d390d1f0b3a5" />
+  <Project Path="Support_Ticket_Management_System_Infrastucture/Support_Ticket.Infrastucture.csproj" Id="9efd0e27-4ccb-4809-89aa-2b6eb64033ff" />
+</Solution>

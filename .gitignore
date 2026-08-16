@@ -1,0 +1,127 @@
+# =========================
+# Visual Studio
+# =========================
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# =========================
+# Build Results
+# =========================
+**/bin/
+**/obj/
+**/Debug/
+**/Release/
+
+# =========================
+# .NET
+# =========================
+*.dll
+*.exe
+*.pdb
+*.cache
+*.tmp
+
+# =========================
+# NuGet
+# =========================
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+
+# =========================
+# ASP.NET Core
+# =========================
+appsettings.Development.json
+appsettings.Local.json
+
+# =========================
+# Logs
+# =========================
+*.log
+logs/
+**/logs/
+
+# =========================
+# Test Results
+# =========================
+TestResults/
+*.trx
+coverage/
+coverage-report/
+
+# =========================
+# Entity Framework
+# =========================
+**/Migrations/*_*.cs
+# Keep migration files if you want them in Git.
+# Remove the above line if your team needs migrations committed.
+
+# =========================
+# User Secrets
+# =========================
+secrets.json
+
+# =========================
+# Node / Angular (if frontend exists)
+# =========================
+node_modules/
+.npm/
+.angular/
+dist/
+out/
+.tmp/
+
+# =========================
+# Environment files
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# OS Files
+# =========================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================
+# ReSharper / Rider
+# =========================
+_ReSharper*/
+.idea/
+*.DotSettings.user
+
+# =========================
+# Database / Local files
+# =========================
+*.mdf
+*.ldf
+*.ndf
+
+# =========================
+# Publish
+# =========================
+publish/
+**/publish/
+*.publishsettings
+
+# =========================
+# Backup files
+# =========================
+*.bak
+*.backup
+*.old
+*~
+
+# =========================
+# Temporary files
+# =========================
+*.swp
+*.swo
+*.orig
