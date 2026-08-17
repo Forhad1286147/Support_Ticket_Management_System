@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Support_Ticket_Management_System_Application\Support_Ticket.Application.csproj" />
+    <ProjectReference Include="..\Support_Ticket_Management_System_Infrastucture\Support_Ticket.Infrastucture.csproj" />
   </ItemGroup>
 
 </Project>
