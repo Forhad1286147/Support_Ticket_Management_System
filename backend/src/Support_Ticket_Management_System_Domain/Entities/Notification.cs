@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Support_Ticket.Infrastucture.DataContext.Models;
-
+namespace Support_Ticket.Domain.Entities;
 public partial class Notification
 {
     public int Id { get; set; }

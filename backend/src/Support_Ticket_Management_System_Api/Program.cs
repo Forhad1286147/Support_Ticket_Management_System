@@ -1,6 +1,7 @@
 
 
 
+using Scalar.AspNetCore;
 using Support_Ticket.Infrastucture;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,7 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+app.MapScalarApiReference();
 
 app.UseHttpsRedirection();
 
