@@ -10,9 +10,4 @@
     <ProjectReference Include="..\Support_Ticket_Management_System_Domain\Support_Ticket.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Common\Interfaces\IServices\" />
-    <Folder Include="Services\" />
-  </ItemGroup>
-
 </Project>

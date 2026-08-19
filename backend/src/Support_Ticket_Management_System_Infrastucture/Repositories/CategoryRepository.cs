@@ -1,4 +1,5 @@
-﻿using Support_Ticket.Application.Common.Interfaces.IRepositories;
+﻿using Microsoft.EntityFrameworkCore;
+using Support_Ticket.Application.Common.Interfaces.IRepositories;
 using Support_Ticket.Domain.Entities;
 using Support_Ticket.Infrastucture.DataContext;
 using System;
@@ -14,11 +15,13 @@ namespace Support_Ticket.Infrastucture.Repositories
         {
             _context = context;
         }
-        public Task<Category> AddAsync(Category category)
+        public async Task<Category> AddAsync(Category category)
         {
             try
             {
-
+                await _context.Categories.AddAsync(category);
+                await _context.SaveChangesAsync();
+                return category;
             }
             catch (Exception ex)
             {
@@ -27,24 +30,43 @@ namespace Support_Ticket.Infrastucture.Repositories
             }
         }
 
-        public Task DeleteAsync(Category category)
+        public async Task<bool> DeleteAsync(int id)
         {
-            throw new NotImplementedException();
+            var existingCategory = await _context.Categories.FindAsync(id);
+            if (existingCategory != null)
+            {
+                _context.Categories.Remove(existingCategory);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
         }
 
-        public Task<List<Category>> GetAllAsync()
+        public async Task<List<Category>> GetAllAsync()
         {
-            throw new NotImplementedException();
+           return await _context.Categories.ToListAsync();
         }
 
-        public Task<Category?> GetByIdAsync(int id)
+        public async Task<Category?> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
-        }
+            return await _context.Categories.FindAsync(id);
+        }   
+        
 
-        public Task UpdateAsync(Category category)
+        public async Task<Category> UpdateAsync(Category category)
         {
-            throw new NotImplementedException();
+            var existingCategory = await _context.Categories.FindAsync(category.Id);
+            if (existingCategory != null)
+            {
+                existingCategory.Name = category.Name;
+                existingCategory.IsActive = category.IsActive;
+                 _context.Update(existingCategory);
+                await _context.SaveChangesAsync(); return category;
+
+            }
+            return null;
+
+
         }
     }
 }
