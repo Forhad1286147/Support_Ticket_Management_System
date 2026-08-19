@@ -12,8 +12,6 @@
 
   <ItemGroup>
     <Folder Include="Common\Interfaces\IServices\" />
-    <Folder Include="DTOs\" />
-    <Folder Include="NewFolder\" />
     <Folder Include="Services\" />
   </ItemGroup>
 
