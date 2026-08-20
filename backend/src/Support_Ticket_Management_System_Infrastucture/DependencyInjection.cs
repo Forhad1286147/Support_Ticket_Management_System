@@ -28,6 +28,7 @@ namespace Support_Ticket.Infrastucture
                 .AddDefaultTokenProviders();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
 
+
             return services;
         }
     }
