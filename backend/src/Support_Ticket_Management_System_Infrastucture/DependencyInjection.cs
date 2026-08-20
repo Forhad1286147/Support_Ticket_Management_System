@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Support_Ticket.Application.Common.Interfaces.IRepositories;
+using Support_Ticket.Application.Common.Interfaces.IServices;
+using Support_Ticket.Application.Services;
 using Support_Ticket.Infrastucture.DataContext;
 using Support_Ticket.Infrastucture.Repositories;
 using System;
@@ -26,8 +28,12 @@ namespace Support_Ticket.Infrastucture
             services.AddIdentity<IdentityUser, IdentityRole<string>>()
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
+            services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
-
+            services.AddScoped<INotificationService, NotificationService>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
+            services.AddScoped<ITicketService, TicketService>();
+            services.AddScoped<ITicketRepository, TicketRepository>();
 
             return services;
         }

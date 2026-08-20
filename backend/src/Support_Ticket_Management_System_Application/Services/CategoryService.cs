@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Support_Ticket.Application.Services   
+namespace Support_Ticket.Application.Services
 {
     public class CategoryService : ICategoryService
     {
