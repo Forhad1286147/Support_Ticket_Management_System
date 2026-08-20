@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Support_Ticket.Application.DTOs
 {
-    internal class UpdateNotification
+    public class UpdateNotification
     {
         public int Id { get; set; }
 

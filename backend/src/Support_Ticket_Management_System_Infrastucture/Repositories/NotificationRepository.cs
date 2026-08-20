@@ -47,12 +47,12 @@ namespace Support_Ticket.Infrastucture.Repositories
             return await _context.Notifications.ToListAsync();
         }
 
-        public async Task<Notification?> GetByIdAsync(int id)
+        public async Task<Notification> GetByIdAsync(int id)
         {
             return await _context.Notifications.FindAsync(id);
         }
 
-        public async Task<Notification?> UpdateAsync(Notification notification)
+        public async Task<Notification> UpdateAsync(Notification notification)
         {
             var existingNotification = await _context.Notifications.FindAsync(notification.Id);
             if (existingNotification != null)
