@@ -220,6 +220,125 @@ namespace Support_Ticket.Infrastucture.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Support_Ticket.Domain.Entities.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("Support_Ticket.Domain.Entities.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool?>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("UserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Notifications");
+                });
+
+            modelBuilder.Entity("Support_Ticket.Domain.Entities.Ticket", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CreatedAt")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("CreatedBy")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Priority")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Status")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("Tickets");
+                });
+
+            modelBuilder.Entity("Support_Ticket.Domain.Entities.TicketComment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comment")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasMaxLength(50)
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("TicketId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TicketId");
+
+                    b.ToTable("TicketComments");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -269,6 +388,36 @@ namespace Support_Ticket.Infrastucture.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Support_Ticket.Domain.Entities.Ticket", b =>
+                {
+                    b.HasOne("Support_Ticket.Domain.Entities.Category", "Category")
+                        .WithMany("Tickets")
+                        .HasForeignKey("CategoryId")
+                        .HasConstraintName("FK_Tickets_Categories");
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Support_Ticket.Domain.Entities.TicketComment", b =>
+                {
+                    b.HasOne("Support_Ticket.Domain.Entities.Ticket", "Ticket")
+                        .WithMany("TicketComments")
+                        .HasForeignKey("TicketId")
+                        .HasConstraintName("FK_TicketComments_Tickets");
+
+                    b.Navigation("Ticket");
+                });
+
+            modelBuilder.Entity("Support_Ticket.Domain.Entities.Category", b =>
+                {
+                    b.Navigation("Tickets");
+                });
+
+            modelBuilder.Entity("Support_Ticket.Domain.Entities.Ticket", b =>
+                {
+                    b.Navigation("TicketComments");
                 });
 #pragma warning restore 612, 618
         }

@@ -49,7 +49,7 @@ namespace Support_Ticket.Api.Controllers
                 return NotFound();
             }
 
-            await _service.UpdateAsync(id, ticket);
+            await _service.UpdateAsync(ticket);
             return NoContent();
         }
 

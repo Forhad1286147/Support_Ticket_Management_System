@@ -8,10 +8,8 @@ namespace Support_Ticket.Application.DTOs
     {
         public int Id { get; set; }
 
-        public string? UserId { get; set; }
-
         public string? Comment { get; set; }
 
-        public string? CreatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
     }
 }

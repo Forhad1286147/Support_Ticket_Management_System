@@ -13,7 +13,7 @@ public partial class TicketComment
 
     public string? Comment { get; set; }
 
-    public string? CreatedAt { get; set; }
+    public DateTime? CreatedAt { get; set; }
 
     public virtual Ticket? Ticket { get; set; }
 }
