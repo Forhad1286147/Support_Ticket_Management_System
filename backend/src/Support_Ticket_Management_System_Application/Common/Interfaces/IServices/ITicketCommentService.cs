@@ -13,5 +13,6 @@ namespace Support_Ticket.Application.Common.Interfaces.IServices
         Task<TicketComment> AddAsync(CreateTicketComment ticketComment);
         Task<TicketComment> UpdateAsync(UpdateTicketComment ticketComment);
         Task<bool> DeleteAsync(int id);
+        
     }
 }
