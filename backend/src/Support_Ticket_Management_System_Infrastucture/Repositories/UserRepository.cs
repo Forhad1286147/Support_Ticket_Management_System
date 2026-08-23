@@ -45,6 +45,6 @@ namespace Support_Ticket.Infrastucture.Repositories
             await _userManager.UpdateAsync(user);
             return user;
         }
-        }
+        
     }
 }
