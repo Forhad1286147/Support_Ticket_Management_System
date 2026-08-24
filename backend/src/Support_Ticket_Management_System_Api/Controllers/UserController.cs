@@ -36,5 +36,16 @@ namespace Support_Ticket.Api.Controllers
             var newUser = await _userService.AddAsycn(user);
             return CreatedAtAction(nameof(GetByIdAsync), new { id = newUser.Id }, newUser);
         }
+        [HttpPut("Update")]
+        public async Task<IActionResult> UpdateAsync(string id, UpdateUser user)
+        {
+            var existingUser = await _userService.GetByIdAsycn(id);
+            if (existingUser == null)
+            {
+                return NotFound();
+            }
+            var updatedUser = await _userService.UpdateAsycn(id, user);
+            return Ok(updatedUser);
+        }
     }
 }

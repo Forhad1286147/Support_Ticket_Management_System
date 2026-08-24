@@ -32,7 +32,7 @@ namespace Support_Ticket.Application.Services
             };
             return await _userRepository.AddAsync(newUser);
         }
-        public async Task<IdentityUser> UpdateAsycn(Support_Ticket.Application.DTOs.UpdateUser user)
+        public async Task<IdentityUser> UpdateAsycn(string id, Support_Ticket.Application.DTOs.UpdateUser user)
         {
             var existingUser = await _userRepository.GetByIdAsync(user.Id);
             if (existingUser == null)
