@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Support_Ticket.Application.DTOs;
 using Support_Ticket.Application.Services;
 
 namespace Support_Ticket.Api.Controllers
@@ -29,6 +30,11 @@ namespace Support_Ticket.Api.Controllers
             }
             return Ok(user);
         }
-
+        [HttpPost("Add")]
+        public async Task<IActionResult> AddAsync(CreateUser user)
+        {
+            var newUser = await _userService.AddAsycn(user);
+            return CreatedAtAction(nameof(GetByIdAsync), new { id = newUser.Id }, newUser);
+        }
     }
 }
