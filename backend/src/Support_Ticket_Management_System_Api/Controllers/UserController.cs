@@ -47,5 +47,20 @@ namespace Support_Ticket.Api.Controllers
             var updatedUser = await _userService.UpdateAsycn(id, user);
             return Ok(updatedUser);
         }
+        [HttpDelete("Delete")]
+        public async Task<IActionResult> DeleteAsync(string id)
+        {
+            var existingUser = await _userService.GetByIdAsycn(id);
+            if (existingUser == null)
+            {
+                return NotFound();
+            }
+            var result = await _userService.DeleteAsycn(id);
+            if (!result)
+            {
+                return BadRequest();
+            }
+            return NoContent();
+        }
     }
 }
