@@ -34,6 +34,13 @@ namespace Support_Ticket.Infrastucture
             services.AddScoped<INotificationRepository, NotificationRepository>();
             services.AddScoped<ITicketService, TicketService>();
             services.AddScoped<ITicketRepository, TicketRepository>();
+            services.AddScoped<ITicketCommentService, TicketCommentService>();
+            services.AddScoped<ITicketCommentRepository, TicketCommentRepository>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserRepository, UserRepository>();
+
+
+
 
             return services;
         }

@@ -8,10 +8,10 @@ using System.Text;
 
 namespace Support_Ticket.Infrastucture.Repositories
 {
-    public class TicketCommentRipository:ITicketCommentRepository
+    public class TicketCommentRepository:ITicketCommentRepository
     {
         private readonly AppDbContext _context;
-        public TicketCommentRipository(AppDbContext context)
+        public TicketCommentRepository(AppDbContext context)
         {
             _context = context;    
         }
