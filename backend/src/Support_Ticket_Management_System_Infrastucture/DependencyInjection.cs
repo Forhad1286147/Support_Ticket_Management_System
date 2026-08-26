@@ -38,6 +38,8 @@ namespace Support_Ticket.Infrastucture
             services.AddScoped<ITicketCommentRepository, TicketCommentRepository>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
 
 
 
