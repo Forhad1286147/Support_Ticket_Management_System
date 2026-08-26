@@ -27,12 +27,24 @@ namespace Support_Ticket.Application.Services
 
         public async Task<IdentityRole> AddRoleAsync(CreateRole role)
         {
-            return await _roleRepository.AddAsync(role);
+            var identityRole = new IdentityRole
+            {
+                Name = role.Name,
+                
+            };
+            return await _roleRepository.AddAsync(identityRole);
         }
 
         public async Task<IdentityRole> UpdateRoleAsync(UpdateRole role)
         {
-            return await _roleRepository.UpdateAsync(role);
+            var existingRole = await _roleRepository.GetByIdAsync(role.Id);
+            if (existingRole == null)
+            {
+                throw new Exception("Role not found");
+            }
+            existingRole.Id = role.Id;
+            existingRole.Name = role.Name;
+            return await _roleRepository.UpdateAsync(existingRole);
         }
 
         public async Task<bool> DeleteRoleAsync(string id)

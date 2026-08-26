@@ -37,14 +37,14 @@ namespace Support_Ticket.Api.Controllers
             return CreatedAtAction(nameof(GetByIdAsync), new { id = newUser.Id }, newUser);
         }
         [HttpPut("Update")]
-        public async Task<IActionResult> UpdateAsync(string id, UpdateUser user)
+        public async Task<IActionResult> UpdateAsync(UpdateUser user)
         {
-            var existingUser = await _userService.GetByIdAsycn(id);
+            var existingUser = await _userService.GetByIdAsycn(user.Id);
             if (existingUser == null)
             {
                 return NotFound();
             }
-            var updatedUser = await _userService.UpdateAsycn(id, user);
+            var updatedUser = await _userService.UpdateAsycn(user);
             return Ok(updatedUser);
         }
         [HttpDelete("Delete")]

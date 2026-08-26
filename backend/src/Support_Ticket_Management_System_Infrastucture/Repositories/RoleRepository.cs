@@ -10,47 +10,45 @@ namespace Support_Ticket.Infrastucture.Repositories
 {
     public class RoleRepository : IRoleRepository
     {
-        private readonly AppDbContext _context;
-        public RoleRepository(AppDbContext context)
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public RoleRepository(RoleManager<IdentityRole> roleManager)
         {
-            _context = context;
+            _roleManager = roleManager;
         }
 
         public async Task<List<IdentityRole>> GetAllAsync()
         {
-            return await _context.Roles.ToListAsync();
+            return await _roleManager.Roles.ToListAsync();
         }
 
         public async Task<IdentityRole> GetByIdAsync(string id)
         {
-            return await _context.Roles.FindAsync(id);
+            return await _roleManager.FindByIdAsync(id);
         }
 
         public async Task<IdentityRole> AddAsync(IdentityRole role)
         {
-            await _context.Roles.AddAsync(role);
-            await _context.SaveChangesAsync();
+            await _roleManager.CreateAsync(role);
             return role;
         }
 
         public async Task<IdentityRole> UpdateAsync(IdentityRole role)
         {
-            var existingRole = await _context.Roles.FindAsync(role.Id);
+            var existingRole = await _roleManager.FindByIdAsync(role.Id);
             if (existingRole != null)
             {
-                _context.Entry(existingRole).CurrentValues.SetValues(role);
-                await _context.SaveChangesAsync();
+                existingRole.Name = role.Name;
+                await _roleManager.UpdateAsync(existingRole);
                 return existingRole;
             }
             return null;
         }
         public async Task<bool> DeleteAsync(string id)
         {
-            var existingRole = await _context.Roles.FindAsync(id);
+            var existingRole = await _roleManager.FindByIdAsync(id);
             if (existingRole != null)
             {
-                _context.Roles.Remove(existingRole);
-                await _context.SaveChangesAsync();
+                await _roleManager.DeleteAsync(existingRole);
                 return true;
             }
             return false;

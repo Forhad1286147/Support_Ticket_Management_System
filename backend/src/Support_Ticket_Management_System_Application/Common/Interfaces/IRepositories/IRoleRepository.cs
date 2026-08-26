@@ -13,7 +13,6 @@ namespace Support_Ticket.Application.Common.Interfaces.IRepositories
         Task<IdentityRole> AddAsync(IdentityRole role);
         Task<IdentityRole> UpdateAsync(IdentityRole role);
         Task<bool> DeleteAsync(string id);
-        Task<IdentityRole> AddAsync(CreateRole role);
-        Task<IdentityRole> UpdateAsync(UpdateRole role);
+      
     }
 }

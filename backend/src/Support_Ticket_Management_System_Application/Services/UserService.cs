@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Support_Ticket.Application.Common.Interfaces.IRepositories;
 using Support_Ticket.Application.Common.Interfaces.IServices;
+using Support_Ticket.Application.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -23,7 +24,7 @@ namespace Support_Ticket.Application.Services
         {
             return await _userRepository.GetByIdAsync(userId);
         }
-        public async Task<IdentityUser> AddAsycn(Support_Ticket.Application.DTOs.CreateUser user)
+        public async Task<IdentityUser> AddAsycn(CreateUser user)
         {
             var newUser = new IdentityUser
             {
@@ -32,7 +33,7 @@ namespace Support_Ticket.Application.Services
             };
             return await _userRepository.AddAsync(newUser);
         }
-        public async Task<IdentityUser> UpdateAsycn(string id, Support_Ticket.Application.DTOs.UpdateUser user)
+        public async Task<IdentityUser> UpdateAsycn(UpdateUser user)
         {
             var existingUser = await _userRepository.GetByIdAsync(user.Id);
             if (existingUser == null)
