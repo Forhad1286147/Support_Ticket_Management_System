@@ -46,8 +46,11 @@ namespace Support_Ticket.Infrastucture
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
+            services.AddScoped<IAuthRepository, AuthRepository>();
+            services.AddScoped<IAuthService, AuthService>();
 
-
+            services.AddScoped<ITokenRepository, TokenRepository>();
+            services.AddScoped<ITokenService, TokenService>();
 
 
             return services;
