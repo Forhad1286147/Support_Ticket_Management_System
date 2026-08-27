@@ -12,4 +12,6 @@ public partial class Category
     public bool IsActive { get; set; }
 
     public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
+
+
 }
