@@ -2,15 +2,17 @@
 
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using Support_Ticket.Application.Common.Interfaces.IServices;
 using Support_Ticket.Application.Services;
 using Support_Ticket.Infrastucture;
+using Support_Ticket.Infrastucture.DataContext;
+using Support_Ticket.Infrastucture.SeedData;
 using System.Text;
 
-var builder = WebApplication.CreateBuilder(args);
-
+edData
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -48,6 +50,20 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+
+    var context = services.GetRequiredService<AppDbContext>();
+    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+    await DbInitializer.InitializeAsync(
+        context,
+        userManager,
+        roleManager);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
