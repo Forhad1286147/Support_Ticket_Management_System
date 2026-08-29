@@ -3,6 +3,7 @@ import { TicketService } from '../../core/services/ticket.service';
 import { CategoryService } from '../../core/services/category.service';
 import { CommentService } from '../../core/services/comment.service';
 import { AuthService } from '../../core/services/auth.service';
+import { SignalRService } from '../../core/services/signalr.service';
 import { Ticket, CreateTicketRequest } from '../../core/models/ticket.model';
 import { Category } from '../../core/models/category.model';
 import { TicketComment } from '../../core/models/comment.model';
@@ -35,11 +36,21 @@ export class CustomerPanelComponent implements OnInit {
     private ticketService: TicketService,
     private categoryService: CategoryService,
     private commentService: CommentService,
+    private signalRService: SignalRService,
     public authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.loadData();
+
+    // Real-time SignalR Comment Updates
+    this.signalRService.comment$.subscribe(comment => {
+      if (this.selectedTicket && comment.ticketId === this.selectedTicket.id) {
+        if (!this.ticketComments.some(c => c.id === comment.id)) {
+          this.ticketComments.push(comment);
+        }
+      }
+    });
   }
 
   loadData(): void {
@@ -83,7 +94,9 @@ export class CustomerPanelComponent implements OnInit {
       createdAt: new Date().toISOString()
     }).subscribe({
       next: (c) => {
-        this.ticketComments.push(c);
+        if (!this.ticketComments.some(existing => existing.id === c.id)) {
+          this.ticketComments.push(c);
+        }
         this.newCommentText = '';
       }
     });

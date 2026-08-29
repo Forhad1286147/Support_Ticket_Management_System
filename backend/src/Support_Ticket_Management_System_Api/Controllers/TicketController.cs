@@ -1,9 +1,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Support_Ticket.Api.Hubs;
 using Support_Ticket.Application.Common.Interfaces.IServices;
 using Support_Ticket.Application.DTOs;
 using Support_Ticket.Domain.Entities;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Support_Ticket.Api.Controllers
 {
@@ -13,9 +17,12 @@ namespace Support_Ticket.Api.Controllers
     public class TicketController : ControllerBase
     {
         private readonly ITicketService _service;
-        public TicketController(ITicketService service  )
+        private readonly IHubContext<TicketHub> _hubContext;
+
+        public TicketController(ITicketService service, IHubContext<TicketHub> hubContext)
         {
             _service = service;
+            _hubContext = hubContext;
         }
 
         [HttpGet("GetAll")]
@@ -24,6 +31,7 @@ namespace Support_Ticket.Api.Controllers
             var tickets = await _service.GetAllAsync();
             return Ok(tickets);
         }
+
         [HttpGet("GetById/{id}")]
         public async Task<ActionResult<Ticket>> GetTicketById(int id)
         {
@@ -39,6 +47,10 @@ namespace Support_Ticket.Api.Controllers
         public async Task<ActionResult<Ticket>> AddTicket(CreateTicket ticket)
         {
             var newTicket = await _service.AddAsync(ticket);
+            
+            // Broadcast real-time SignalR notification for new ticket creation
+            await _hubContext.Clients.All.SendAsync("ReceiveTicketNotification", newTicket);
+
             return CreatedAtAction(nameof(GetTicketById), new { id = newTicket.Id }, newTicket);
         }
 
@@ -53,6 +65,10 @@ namespace Support_Ticket.Api.Controllers
             }
 
             var updatedTicket = await _service.UpdateAsync(ticket);
+
+            // Broadcast real-time status update notification
+            await _hubContext.Clients.All.SendAsync("ReceiveTicketNotification", updatedTicket);
+
             return Ok(updatedTicket);
         }
 

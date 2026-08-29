@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TicketService } from '../../core/services/ticket.service';
 import { CommentService } from '../../core/services/comment.service';
 import { AuthService } from '../../core/services/auth.service';
+import { SignalRService } from '../../core/services/signalr.service';
 import { Ticket } from '../../core/models/ticket.model';
 import { TicketComment } from '../../core/models/comment.model';
 
@@ -26,11 +27,29 @@ export class AgentPanelComponent implements OnInit {
   constructor(
     private ticketService: TicketService,
     private commentService: CommentService,
+    private signalRService: SignalRService,
     public authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.loadTickets();
+
+    // SignalR Real-time Ticket Subscriptions
+    this.signalRService.ticketNotification$.subscribe(ticket => {
+      if (!this.tickets.some(t => t.id === ticket.id)) {
+        this.tickets.unshift(ticket);
+        this.applyFilter();
+        this.msg = `⚡ Real-time Notification: New Ticket #${ticket.id} received!`;
+      }
+    });
+
+    this.signalRService.comment$.subscribe(comment => {
+      if (this.selectedTicket && comment.ticketId === this.selectedTicket.id) {
+        if (!this.ticketComments.some(c => c.id === comment.id)) {
+          this.ticketComments.push(comment);
+        }
+      }
+    });
   }
 
   loadTickets(): void {
@@ -89,7 +108,9 @@ export class AgentPanelComponent implements OnInit {
       createdAt: new Date().toISOString()
     }).subscribe({
       next: (c) => {
-        this.ticketComments.push(c);
+        if (!this.ticketComments.some(existing => existing.id === c.id)) {
+          this.ticketComments.push(c);
+        }
         this.newCommentText = '';
         this.msg = 'Comment posted successfully.';
       }

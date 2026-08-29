@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Support_Ticket.Api.Hubs;
 using Support_Ticket.Application.Common.Interfaces.IServices;
 using Support_Ticket.Application.DTOs;
 using Support_Ticket.Domain.Entities;
-using System.Diagnostics.Contracts;
+using System.Threading.Tasks;
 
 namespace Support_Ticket.Api.Controllers
 {
@@ -13,10 +15,13 @@ namespace Support_Ticket.Api.Controllers
     [Authorize]
     public class TicketCommentController : ControllerBase
     {
-        private readonly ITicketCommentService _service;    
-        public TicketCommentController(ITicketCommentService service)
+        private readonly ITicketCommentService _service;
+        private readonly IHubContext<TicketHub> _hubContext;
+
+        public TicketCommentController(ITicketCommentService service, IHubContext<TicketHub> hubContext)
         {
             _service = service;
+            _hubContext = hubContext;
         }
 
         [HttpGet("GetAll")]
@@ -25,6 +30,7 @@ namespace Support_Ticket.Api.Controllers
             var comments = await _service.GetAllAsync();
             return Ok(comments);
         }
+
         [HttpGet("GetById/{id}")]
         public async Task<ActionResult> GetById(int id)
         {
@@ -35,12 +41,18 @@ namespace Support_Ticket.Api.Controllers
             }
             return Ok(comment);
         }
+
         [HttpPost("Add")]
         public async Task<ActionResult> Add(CreateTicketComment comment)
         {
             var newComment = await _service.AddAsync(comment);
+
+            // Broadcast real-time comment notification to agent, customer, and admin
+            await _hubContext.Clients.All.SendAsync("ReceiveComment", newComment);
+
             return CreatedAtAction(nameof(GetById), new { id = newComment.Id }, newComment);
         }
+
         [HttpPut("Update")]
         public async Task<ActionResult> Update(UpdateTicketComment comment)
         {
@@ -51,6 +63,7 @@ namespace Support_Ticket.Api.Controllers
             }
             return Ok(updatedComment);
         }
+
         [HttpDelete("Delete/{id}")]
         public async Task<ActionResult> Delete(int id)
         {
@@ -61,7 +74,5 @@ namespace Support_Ticket.Api.Controllers
             }
             return NoContent();
         }
-
-
     }
 }

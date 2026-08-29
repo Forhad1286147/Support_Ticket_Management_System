@@ -83,3 +83,10 @@
     </button>
   </div>
 </header>
+
+<!-- SignalR Floating Toast Notification -->
+<div class="signalr-toast" *ngIf="toastMessage" (click)="toastMessage = null">
+  <span class="toast-icon">⚡</span>
+  <span class="toast-text">{{ toastMessage }}</span>
+  <span class="toast-close">✕</span>
+</div>

@@ -198,3 +198,48 @@
 .role-admin { color: #a78bfa; }
 .role-agent { color: #60a5fa; }
 .role-customer { color: #34d399; }
+
+.signalr-toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95));
+  border: 1px solid var(--accent-blue);
+  box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+  backdrop-filter: blur(12px);
+  color: white;
+  padding: 14px 20px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 9999;
+  cursor: pointer;
+  animation: slideInUp 0.3s ease-out;
+}
+
+.toast-icon {
+  font-size: 1.2rem;
+}
+
+.toast-text {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.toast-close {
+  opacity: 0.6;
+  font-size: 0.8rem;
+  margin-left: 8px;
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
