@@ -10,6 +10,10 @@ import { AuthService } from '../../core/services/auth.service';
 export class DashboardComponent implements OnInit {
   constructor(public authService: AuthService, private router: Router) {}
 
+  get userRole(): string {
+    return this.authService.getPrimaryRole();
+  }
+
   ngOnInit(): void {
     const role = this.authService.getPrimaryRole();
     if (role === 'Admin') {

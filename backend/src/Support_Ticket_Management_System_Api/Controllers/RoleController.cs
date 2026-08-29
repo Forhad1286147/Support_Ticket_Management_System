@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Support_Ticket.Application.Common.Interfaces.IServices;
@@ -45,6 +45,7 @@ namespace Support_Ticket.Api.Controllers
         [HttpPut("Update")]
         public async Task<IActionResult> UpdateRoleAsync(string id, [FromBody] UpdateRole role)
         {
+            if (role != null) role.Id = id;
             var updatedRole = await _roleService.UpdateRoleAsync(role);
             if (updatedRole == null)
             {

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Support_Ticket.Application.Common.Interfaces.IServices;
@@ -45,14 +45,15 @@ namespace Support_Ticket.Api.Controllers
         [HttpPut("Update")]
         public async Task<ActionResult<Ticket>> UpdateTicket(int id, UpdateTicket ticket)
         {
+            ticket.Id = id;
             var existingTicket = await _service.GetAsync(id);
             if (existingTicket == null)
             {
                 return NotFound();
             }
 
-            await _service.UpdateAsync(ticket);
-            return NoContent();
+            var updatedTicket = await _service.UpdateAsync(ticket);
+            return Ok(updatedTicket);
         }
 
         [HttpDelete("Delete/{id}")]

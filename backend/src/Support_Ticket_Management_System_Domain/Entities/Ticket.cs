@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace Support_Ticket.Domain.Entities;
@@ -20,6 +20,8 @@ public partial class Ticket
     public string? Priority { get; set; }
 
     public string? CreatedAt { get; set; }
+
+    public bool IsDeleted { get; set; } = false;
 
     public virtual Category? Category { get; set; }
 

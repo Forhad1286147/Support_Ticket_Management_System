@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Support_Ticket.Application.Common.Interfaces.IRepositories;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Support_Ticket.Infrastucture.Repositories
 {
@@ -15,9 +16,23 @@ namespace Support_Ticket.Infrastucture.Repositories
             _userManager = userManager;
         }
 
-        public async Task<IdentityUser> AddAsync(IdentityUser user)
+        public async Task<IdentityUser> AddAsync(IdentityUser user, string? password = null)
         {
-            await _userManager.CreateAsync(user);
+            IdentityResult result;
+            if (!string.IsNullOrEmpty(password))
+            {
+                result = await _userManager.CreateAsync(user, password);
+            }
+            else
+            {
+                result = await _userManager.CreateAsync(user);
+            }
+
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                throw new InvalidOperationException($"Failed to create user: {errors}");
+            }
             return user;
         }
 
@@ -26,8 +41,8 @@ namespace Support_Ticket.Infrastucture.Repositories
             var user = await _userManager.FindByIdAsync(id);
             if (user == null) return false;
 
-            await _userManager.DeleteAsync(user);
-            return true;
+            var result = await _userManager.DeleteAsync(user);
+            return result.Succeeded;
         }
 
         public async Task<List<IdentityUser>> GetAllAsync()
@@ -40,11 +55,35 @@ namespace Support_Ticket.Infrastucture.Repositories
             return await _userManager.FindByIdAsync(id);
         }
 
-        public async Task<IdentityUser> UpdateAsync(IdentityUser user)
+        public async Task<IdentityUser> UpdateAsync(IdentityUser user, string? password = null)
         {
-            await _userManager.UpdateAsync(user);
-            return user;
+            var existingUser = await _userManager.FindByIdAsync(user.Id);
+            if (existingUser == null)
+            {
+                throw new InvalidOperationException("User not found.");
+            }
+
+            existingUser.UserName = user.UserName;
+            existingUser.Email = user.Email;
+            if (!string.IsNullOrEmpty(user.PhoneNumber))
+            {
+                existingUser.PhoneNumber = user.PhoneNumber;
+            }
+
+            var result = await _userManager.UpdateAsync(existingUser);
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                throw new InvalidOperationException($"Failed to update user: {errors}");
+            }
+
+            if (!string.IsNullOrEmpty(password))
+            {
+                var resetToken = await _userManager.GeneratePasswordResetTokenAsync(existingUser);
+                await _userManager.ResetPasswordAsync(existingUser, resetToken, password);
+            }
+
+            return existingUser;
         }
-        
     }
 }

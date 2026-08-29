@@ -1,41 +1,35 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Support_Ticket.Application.Common.Interfaces.IRepositories;
 using Support_Ticket.Domain.Entities;
 using Support_Ticket.Infrastucture.DataContext;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Support_Ticket.Infrastucture.Repositories
 {
-    public class TicketCommentRepository:ITicketCommentRepository
+    public class TicketCommentRepository : ITicketCommentRepository
     {
         private readonly AppDbContext _context;
         public TicketCommentRepository(AppDbContext context)
         {
-            _context = context;    
+            _context = context;
         }
 
         public async Task<TicketComment> AddAsync(TicketComment ticketComment)
         {
-            try
-            {
-                await _context.TicketComments.AddAsync(ticketComment);
-                await _context.SaveChangesAsync();
-                return ticketComment;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            await _context.TicketComments.AddAsync(ticketComment);
+            await _context.SaveChangesAsync();
+            return ticketComment;
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var existingTicketComment = await _context.TicketComments.FindAsync(id);
+            var existingTicketComment = await _context.TicketComments.FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
             if (existingTicketComment != null)
             {
-                _context.TicketComments.Remove(existingTicketComment);
+                existingTicketComment.IsDeleted = true;
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -44,15 +38,17 @@ namespace Support_Ticket.Infrastucture.Repositories
 
         public async Task<List<TicketComment>> GetAllAsync()
         {
-            return await _context.TicketComments.ToListAsync();
+            return await _context.TicketComments.Where(c => !c.IsDeleted).ToListAsync();
         }
-        public async Task<TicketComment> GetByIdAsync(int id)
+
+        public async Task<TicketComment?> GetByIdAsync(int id)
         {
-            return await _context.TicketComments.FindAsync(id);
+            return await _context.TicketComments.FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
         }
-        public async Task<TicketComment> UpdateAsync(TicketComment ticketComment)
+
+        public async Task<TicketComment?> UpdateAsync(TicketComment ticketComment)
         {
-            var existingTicketComment = await _context.TicketComments.FindAsync(ticketComment.Id);
+            var existingTicketComment = await _context.TicketComments.FirstOrDefaultAsync(c => c.Id == ticketComment.Id && !c.IsDeleted);
             if (existingTicketComment != null)
             {
                 _context.Entry(existingTicketComment).CurrentValues.SetValues(ticketComment);

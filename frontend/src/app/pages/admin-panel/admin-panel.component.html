@@ -5,9 +5,10 @@
       <p class="panel-sub">Complete control over system users, roles, categories, and support tickets</p>
     </div>
     <div class="admin-actions">
-      <button class="btn btn-primary btn-sm" (click)="showUserModal = true">＋ Add User</button>
-      <button class="btn btn-purple btn-sm" (click)="showRoleModal = true">＋ Add Role</button>
-      <button class="btn btn-success btn-sm" (click)="showCategoryModal = true">＋ Add Category</button>
+      <button class="btn btn-primary btn-sm" (click)="openCreateUserModal()">＋ Add User</button>
+      <button class="btn btn-purple btn-sm" (click)="openCreateRoleModal()">＋ Add Role</button>
+      <button class="btn btn-success btn-sm" (click)="openCreateCategoryModal()">＋ Add Category</button>
+      <button class="btn btn-secondary btn-sm" (click)="openCreateTicketModal()">＋ Add Ticket</button>
     </div>
   </div>
 
@@ -76,7 +77,7 @@
       <div class="overview-section">
         <h4>Categories Summary</h4>
         <div class="cat-tags">
-          <span *ngFor="let c of categories" class="badge badge-open">
+          <span *ngFor="let c of categories" class="badge" [class.badge-resolved]="c.isActive" [class.badge-high]="!c.isActive">
             {{ c.name }} ({{ c.isActive ? 'Active' : 'Inactive' }})
           </span>
         </div>
@@ -88,7 +89,7 @@
   <div *ngIf="activeTab === 'users'" class="tab-content glass-card">
     <div class="tab-header">
       <h3>User Accounts Management</h3>
-      <button class="btn btn-primary btn-sm" (click)="showUserModal = true">＋ Create User</button>
+      <button class="btn btn-primary btn-sm" (click)="openCreateUserModal()">＋ Create User</button>
     </div>
     <div class="table-responsive">
       <table class="custom-table">
@@ -106,7 +107,10 @@
             <td><strong>{{ user.userName }}</strong></td>
             <td>{{ user.email }}</td>
             <td>
-              <button class="btn btn-danger btn-sm" (click)="deleteUser(user.id)">Delete</button>
+              <div class="action-buttons">
+                <button class="btn btn-secondary btn-sm" (click)="openEditUserModal(user)">✏️ Edit</button>
+                <button class="btn btn-danger btn-sm" (click)="deleteUser(user.id)">🗑️ Delete</button>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -118,7 +122,7 @@
   <div *ngIf="activeTab === 'roles'" class="tab-content glass-card">
     <div class="tab-header">
       <h3>System Roles</h3>
-      <button class="btn btn-purple btn-sm" (click)="showRoleModal = true">＋ Create Role</button>
+      <button class="btn btn-purple btn-sm" (click)="openCreateRoleModal()">＋ Create Role</button>
     </div>
     <div class="table-responsive">
       <table class="custom-table">
@@ -134,7 +138,10 @@
             <td><code>{{ role.id }}</code></td>
             <td><span class="badge badge-open">{{ role.name }}</span></td>
             <td>
-              <button class="btn btn-danger btn-sm" (click)="deleteRole(role.id)">Delete</button>
+              <div class="action-buttons">
+                <button class="btn btn-secondary btn-sm" (click)="openEditRoleModal(role)">✏️ Edit</button>
+                <button class="btn btn-danger btn-sm" (click)="deleteRole(role.id)">🗑️ Delete</button>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -146,7 +153,7 @@
   <div *ngIf="activeTab === 'categories'" class="tab-content glass-card">
     <div class="tab-header">
       <h3>Support Categories</h3>
-      <button class="btn btn-success btn-sm" (click)="showCategoryModal = true">＋ Create Category</button>
+      <button class="btn btn-success btn-sm" (click)="openCreateCategoryModal()">＋ Create Category</button>
     </div>
     <div class="table-responsive">
       <table class="custom-table">
@@ -168,7 +175,10 @@
               </span>
             </td>
             <td>
-              <button class="btn btn-danger btn-sm" (click)="deleteCategory(cat.id)">Delete</button>
+              <div class="action-buttons">
+                <button class="btn btn-secondary btn-sm" (click)="openEditCategoryModal(cat)">✏️ Edit</button>
+                <button class="btn btn-danger btn-sm" (click)="deleteCategory(cat.id)">🗑️ Delete</button>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -178,7 +188,10 @@
 
   <!-- TICKETS TAB -->
   <div *ngIf="activeTab === 'tickets'" class="tab-content glass-card">
-    <h3>All Support Tickets</h3>
+    <div class="tab-header">
+      <h3>All Support Tickets</h3>
+      <button class="btn btn-primary btn-sm" (click)="openCreateTicketModal()">＋ Create Ticket</button>
+    </div>
     <div class="table-responsive">
       <table class="custom-table">
         <thead>
@@ -188,7 +201,6 @@
             <th>Category</th>
             <th>Priority</th>
             <th>Status</th>
-            <th>Created By</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -209,9 +221,11 @@
                 <option value="Resolved">Resolved</option>
               </select>
             </td>
-            <td>{{ t.createdBy || 'Customer' }}</td>
             <td>
-              <button class="btn btn-danger btn-sm" (click)="deleteTicket(t.id)">Delete</button>
+              <div class="action-buttons">
+                <button class="btn btn-secondary btn-sm" (click)="openEditTicketModal(t)">✏️ Edit</button>
+                <button class="btn btn-danger btn-sm" (click)="deleteTicket(t.id)">🗑️ Delete</button>
+              </div>
             </td>
           </tr>
         </tbody>
@@ -219,70 +233,159 @@
     </div>
   </div>
 
-  <!-- Create User Modal -->
+  <!-- User Modal (Create & Edit) -->
   <div class="modal-backdrop" *ngIf="showUserModal">
     <div class="modal-content">
       <div class="modal-header">
-        <h4>Create New User Account</h4>
+        <h4>{{ editingUser ? 'Edit User Account' : 'Create New User Account' }}</h4>
         <button class="btn btn-secondary btn-sm" (click)="showUserModal = false">✕</button>
       </div>
       <div class="modal-body">
-        <div class="form-group">
+        <div class="form-group" *ngIf="!editingUser">
           <label class="form-label">Username</label>
           <input type="text" class="form-control" [(ngModel)]="newUser.userName" placeholder="e.g. john_doe" />
         </div>
-        <div class="form-group">
-          <label class="form-label">Email</label>
+        <div class="form-group" *ngIf="editingUser">
+          <label class="form-label">Username</label>
+          <input type="text" class="form-control" [(ngModel)]="editingUser.userName" />
+        </div>
+
+        <div class="form-group" *ngIf="!editingUser">
+          <label class="form-label">Email Address</label>
           <input type="email" class="form-control" [(ngModel)]="newUser.email" placeholder="john@example.com" />
         </div>
-        <div class="form-group">
+        <div class="form-group" *ngIf="editingUser">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-control" [(ngModel)]="editingUser.email" />
+        </div>
+
+        <div class="form-group" *ngIf="!editingUser">
           <label class="form-label">Password</label>
-          <input type="password" class="form-control" [(ngModel)]="newUser.password" placeholder="••••••••" />
+          <input type="password" class="form-control" [(ngModel)]="newUser.password" placeholder="e.g. Admin@123" />
+        </div>
+        <div class="form-group" *ngIf="editingUser">
+          <label class="form-label">New Password (optional)</label>
+          <input type="password" class="form-control" [(ngModel)]="editingUser.password" placeholder="Leave blank to keep unchanged" />
         </div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" (click)="showUserModal = false">Cancel</button>
-        <button class="btn btn-primary" (click)="addUser()">Create User</button>
+        <button class="btn btn-primary" (click)="saveUser()">{{ editingUser ? 'Update User' : 'Create User' }}</button>
       </div>
     </div>
   </div>
 
-  <!-- Create Role Modal -->
+  <!-- Role Modal (Create & Edit) -->
   <div class="modal-backdrop" *ngIf="showRoleModal">
     <div class="modal-content">
       <div class="modal-header">
-        <h4>Create New System Role</h4>
+        <h4>{{ editingRole ? 'Edit Role' : 'Create New System Role' }}</h4>
         <button class="btn btn-secondary btn-sm" (click)="showRoleModal = false">✕</button>
       </div>
       <div class="modal-body">
-        <div class="form-group">
+        <div class="form-group" *ngIf="!editingRole">
           <label class="form-label">Role Name</label>
           <input type="text" class="form-control" [(ngModel)]="newRole.name" placeholder="e.g. Manager" />
+        </div>
+        <div class="form-group" *ngIf="editingRole">
+          <label class="form-label">Role Name</label>
+          <input type="text" class="form-control" [(ngModel)]="editingRole.name" />
         </div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" (click)="showRoleModal = false">Cancel</button>
-        <button class="btn btn-purple" (click)="addRole()">Create Role</button>
+        <button class="btn btn-purple" (click)="saveRole()">{{ editingRole ? 'Update Role' : 'Create Role' }}</button>
       </div>
     </div>
   </div>
 
-  <!-- Create Category Modal -->
+  <!-- Category Modal (Create & Edit) -->
   <div class="modal-backdrop" *ngIf="showCategoryModal">
     <div class="modal-content">
       <div class="modal-header">
-        <h4>Create New Category</h4>
+        <h4>{{ editingCategory ? 'Edit Category' : 'Create New Category' }}</h4>
         <button class="btn btn-secondary btn-sm" (click)="showCategoryModal = false">✕</button>
       </div>
       <div class="modal-body">
-        <div class="form-group">
+        <div class="form-group" *ngIf="!editingCategory">
           <label class="form-label">Category Name</label>
           <input type="text" class="form-control" [(ngModel)]="newCategory.name" placeholder="e.g. Network Support" />
+        </div>
+        <div class="form-group" *ngIf="editingCategory">
+          <label class="form-label">Category Name</label>
+          <input type="text" class="form-control" [(ngModel)]="editingCategory.name" />
+        </div>
+
+        <div class="form-group" *ngIf="editingCategory">
+          <label class="form-label">Category Status</label>
+          <select class="form-control" [(ngModel)]="editingCategory.isActive">
+            <option [ngValue]="true">Active</option>
+            <option [ngValue]="false">Inactive</option>
+          </select>
         </div>
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" (click)="showCategoryModal = false">Cancel</button>
-        <button class="btn btn-success" (click)="addCategory()">Create Category</button>
+        <button class="btn btn-success" (click)="saveCategory()">{{ editingCategory ? 'Update Category' : 'Create Category' }}</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ticket Modal (Create & Edit) -->
+  <div class="modal-backdrop" *ngIf="showTicketModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4>{{ editingTicket ? 'Edit Support Ticket' : 'Create New Support Ticket' }}</h4>
+        <button class="btn btn-secondary btn-sm" (click)="showTicketModal = false">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group" *ngIf="!editingTicket">
+          <label class="form-label">Ticket Title</label>
+          <input type="text" class="form-control" [(ngModel)]="newTicket.title" placeholder="Describe the issue..." />
+        </div>
+        <div class="form-group" *ngIf="editingTicket">
+          <label class="form-label">Ticket Title</label>
+          <input type="text" class="form-control" [(ngModel)]="editingTicket.title" />
+        </div>
+
+        <div class="form-group" *ngIf="!editingTicket">
+          <label class="form-label">Priority</label>
+          <select class="form-control" [(ngModel)]="newTicket.priority">
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+        </div>
+        <div class="form-group" *ngIf="editingTicket">
+          <label class="form-label">Priority</label>
+          <select class="form-control" [(ngModel)]="editingTicket.priority">
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+        </div>
+
+        <div class="form-group" *ngIf="editingTicket">
+          <label class="form-label">Status</label>
+          <select class="form-control" [(ngModel)]="editingTicket.status">
+            <option value="Open">Open</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Resolved">Resolved</option>
+          </select>
+        </div>
+
+        <div class="form-group" *ngIf="!editingTicket">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" rows="3" [(ngModel)]="newTicket.description"></textarea>
+        </div>
+        <div class="form-group" *ngIf="editingTicket">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" rows="3" [(ngModel)]="editingTicket.description"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="showTicketModal = false">Cancel</button>
+        <button class="btn btn-primary" (click)="saveTicket()">{{ editingTicket ? 'Update Ticket' : 'Create Ticket' }}</button>
       </div>
     </div>
   </div>

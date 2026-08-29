@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Support_Ticket.Application.Common.Interfaces.IRepositories;
 using Support_Ticket.Domain.Entities;
 using Support_Ticket.Infrastucture.DataContext;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Support_Ticket.Infrastucture.Repositories
 {
@@ -15,27 +16,21 @@ namespace Support_Ticket.Infrastucture.Repositories
         {
             _context = context;
         }
+
         public async Task<Category> AddAsync(Category category)
         {
-            try
-            {
-                await _context.Categories.AddAsync(category);
-                await _context.SaveChangesAsync();
-                return category;
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
+            await _context.Categories.AddAsync(category);
+            await _context.SaveChangesAsync();
+            return category;
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var existingCategory = await _context.Categories.FindAsync(id);
+            var existingCategory = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
             if (existingCategory != null)
             {
-                _context.Categories.Remove(existingCategory);
+                existingCategory.IsDeleted = true;
+                existingCategory.IsActive = false;
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -44,29 +39,24 @@ namespace Support_Ticket.Infrastucture.Repositories
 
         public async Task<List<Category>> GetAllAsync()
         {
-           return await _context.Categories.ToListAsync();
+            return await _context.Categories.Where(c => !c.IsDeleted).ToListAsync();
         }
 
         public async Task<Category?> GetByIdAsync(int id)
         {
-            return await _context.Categories.FindAsync(id);
-        }   
-        
+            return await _context.Categories.FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
+        }
 
-        public async Task<Category> UpdateAsync(Category category)
+        public async Task<Category?> UpdateAsync(Category category)
         {
-            var existingCategory = await _context.Categories.FindAsync(category.Id);
+            var existingCategory = await _context.Categories.FirstOrDefaultAsync(c => c.Id == category.Id && !c.IsDeleted);
             if (existingCategory != null)
             {
-                existingCategory.Name = category.Name;
-                existingCategory.IsActive = category.IsActive;
-                 _context.Update(existingCategory);
-                await _context.SaveChangesAsync(); return category;
-
+                _context.Entry(existingCategory).CurrentValues.SetValues(category);
+                await _context.SaveChangesAsync();
+                return existingCategory;
             }
             return null;
-
-
         }
     }
 }

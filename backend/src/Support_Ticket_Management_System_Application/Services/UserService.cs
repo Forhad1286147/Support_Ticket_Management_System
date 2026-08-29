@@ -1,14 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Support_Ticket.Application.Common.Interfaces.IRepositories;
 using Support_Ticket.Application.Common.Interfaces.IServices;
 using Support_Ticket.Application.DTOs;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace Support_Ticket.Application.Services
 {
-    public class UserService:IUserService
+    public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
         public UserService(IUserRepository userRepository)
@@ -20,19 +20,23 @@ namespace Support_Ticket.Application.Services
         {
             return await _userRepository.GetAllAsync();
         }
+
         public async Task<IdentityUser> GetByIdAsycn(string userId)
         {
             return await _userRepository.GetByIdAsync(userId);
         }
+
         public async Task<IdentityUser> AddAsycn(CreateUser user)
         {
             var newUser = new IdentityUser
             {
                 UserName = user.UserName,
-                Email = user.Email
+                Email = user.Email,
+                EmailConfirmed = true
             };
-            return await _userRepository.AddAsync(newUser);
+            return await _userRepository.AddAsync(newUser, user.Password);
         }
+
         public async Task<IdentityUser> UpdateAsycn(UpdateUser user)
         {
             var existingUser = await _userRepository.GetByIdAsync(user.Id);
@@ -40,10 +44,14 @@ namespace Support_Ticket.Application.Services
             {
                 throw new Exception("User not found");
             }
+
             existingUser.UserName = user.UserName;
             existingUser.Email = user.Email;
-            return await _userRepository.UpdateAsync(existingUser);
+            existingUser.PhoneNumber = user.Phone;
+
+            return await _userRepository.UpdateAsync(existingUser, user.Password);
         }
+
         public async Task<bool> DeleteAsycn(string id)
         {
             var existingUser = await _userRepository.GetByIdAsync(id);
@@ -53,6 +61,5 @@ namespace Support_Ticket.Application.Services
             }
             return await _userRepository.DeleteAsync(id);
         }
-
     }
 }

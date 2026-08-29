@@ -1,14 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Support_Ticket.Application.Common.Interfaces.IRepositories;
 using Support_Ticket.Domain.Entities;
 using Support_Ticket.Infrastucture.DataContext;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Support_Ticket.Infrastucture.Repositories
 {
-    public class NotificationRepository:INotificationRepository
+    public class NotificationRepository : INotificationRepository
     {
         private readonly AppDbContext _context;
         public NotificationRepository(AppDbContext context)
@@ -18,24 +19,17 @@ namespace Support_Ticket.Infrastucture.Repositories
 
         public async Task<Notification> AddAsync(Notification notification)
         {
-            try
-            {
-                await _context.Notifications.AddAsync(notification);
-                await _context.SaveChangesAsync();
-                return notification;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            await _context.Notifications.AddAsync(notification);
+            await _context.SaveChangesAsync();
+            return notification;
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var existingNotification = await _context.Notifications.FindAsync(id);
+            var existingNotification = await _context.Notifications.FirstOrDefaultAsync(n => n.Id == id && !n.IsDeleted);
             if (existingNotification != null)
             {
-                _context.Notifications.Remove(existingNotification);
+                existingNotification.IsDeleted = true;
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -44,22 +38,22 @@ namespace Support_Ticket.Infrastucture.Repositories
 
         public async Task<List<Notification>> GetAllAsync()
         {
-            return await _context.Notifications.ToListAsync();
+            return await _context.Notifications.Where(n => !n.IsDeleted).ToListAsync();
         }
 
-        public async Task<Notification> GetByIdAsync(int id)
+        public async Task<Notification?> GetByIdAsync(int id)
         {
-            return await _context.Notifications.FindAsync(id);
+            return await _context.Notifications.FirstOrDefaultAsync(n => n.Id == id && !n.IsDeleted);
         }
 
-        public async Task<Notification> UpdateAsync(Notification notification)
+        public async Task<Notification?> UpdateAsync(Notification notification)
         {
-            var existingNotification = await _context.Notifications.FindAsync(notification.Id);
+            var existingNotification = await _context.Notifications.FirstOrDefaultAsync(n => n.Id == notification.Id && !n.IsDeleted);
             if (existingNotification != null)
             {
                 _context.Entry(existingNotification).CurrentValues.SetValues(notification);
                 await _context.SaveChangesAsync();
-                return notification;
+                return existingNotification;
             }
             return null;
         }
