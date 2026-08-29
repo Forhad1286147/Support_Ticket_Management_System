@@ -12,7 +12,8 @@ using Support_Ticket.Infrastucture.DataContext;
 using Support_Ticket.Infrastucture.SeedData;
 using System.Text;
 
-edData
+var builder = WebApplication.CreateBuilder(args);
+
 // Add services to the container.
 
 builder.Services.AddControllers();

@@ -13,7 +13,7 @@ namespace Support_Ticket.Infrastucture.SeedData
         public static async Task InitializeAsync(AppDbContext context, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             // Database migration
-            //await context.Database.MigrateAsync();
+            await context.Database.MigrateAsync();
 
             // Seed Roles
             await SeedRolesAsync(roleManager);
