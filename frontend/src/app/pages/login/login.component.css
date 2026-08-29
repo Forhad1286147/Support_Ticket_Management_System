@@ -1,0 +1,122 @@
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 480px;
+}
+
+.brand-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.logo-icon {
+  font-size: 3rem;
+  margin-bottom: 8px;
+}
+
+.brand-header h2 {
+  font-size: 1.75rem;
+  margin-bottom: 4px;
+}
+
+.subtitle {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.btn-block {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+}
+
+.demo-section {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px dashed var(--border-color);
+}
+
+.demo-divider {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.demo-divider span {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+}
+
+.demo-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.demo-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.demo-card:hover {
+  background: rgba(59, 130, 246, 0.12);
+  border-color: rgba(59, 130, 246, 0.4);
+  transform: translateX(4px);
+}
+
+.demo-icon {
+  font-size: 1.5rem;
+}
+
+.demo-info {
+  flex: 1;
+}
+
+.demo-role-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  color: white;
+  margin-bottom: 2px;
+}
+
+.bg-purple { background: var(--accent-purple); }
+.bg-blue { background: var(--accent-blue); }
+.bg-green { background: var(--accent-emerald); }
+
+.demo-email {
+  font-size: 0.85rem;
+  color: white;
+  font-weight: 500;
+}
+
+.demo-pass {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.demo-arrow {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+}
+
+.demo-card:hover .demo-arrow {
+  color: var(--accent-blue);
+}

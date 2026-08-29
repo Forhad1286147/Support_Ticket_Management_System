@@ -1,0 +1,138 @@
+<div class="panel-container">
+  <div class="panel-header glass-card">
+    <div>
+      <h2>👤 Customer Support Portal</h2>
+      <p class="panel-sub">Submit technical inquiries, track issue resolution, and message support staff</p>
+    </div>
+    <div>
+      <button class="btn btn-primary" (click)="showCreateModal = true">
+        ➕ Submit New Ticket
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="msg" class="alert alert-success">{{ msg }}</div>
+  <div *ngIf="errorMsg" class="alert alert-danger">{{ errorMsg }}</div>
+
+  <!-- Customer Tickets List -->
+  <div class="tab-content glass-card">
+    <h3>My Support Tickets ({{ tickets.length }})</h3>
+
+    <div class="tickets-grid" *ngIf="tickets.length > 0">
+      <div 
+        *ngFor="let t of tickets" 
+        class="ticket-card glass-card"
+        (click)="openTicketDetails(t)"
+      >
+        <div class="t-card-header">
+          <span class="badge" [class.badge-open]="t.status === 'Open'" [class.badge-progress]="t.status === 'In Progress'" [class.badge-resolved]="t.status === 'Resolved'">
+            {{ t.status }}
+          </span>
+          <span class="badge" [class.badge-high]="t.priority === 'High'" [class.badge-medium]="t.priority === 'Medium'" [class.badge-low]="t.priority === 'Low'">
+            {{ t.priority }} Priority
+          </span>
+        </div>
+
+        <h4 class="t-title">#{{ t.id }}: {{ t.title }}</h4>
+        <p class="t-desc">{{ t.description }}</p>
+
+        <div class="t-card-footer">
+          <span class="t-cat">Category: {{ t.category?.name || 'General Support' }}</span>
+          <span class="t-action">View Thread 💬</span>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="tickets.length === 0" class="empty-state">
+      <div class="empty-icon">📁</div>
+      <h4>No support tickets found</h4>
+      <p>Click "Submit New Ticket" to get assistance from our support team.</p>
+    </div>
+  </div>
+
+  <!-- Submit Ticket Modal -->
+  <div class="modal-backdrop" *ngIf="showCreateModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4>Create Support Ticket</h4>
+        <button class="btn btn-secondary btn-sm" (click)="showCreateModal = false">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Subject / Title</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            [(ngModel)]="newTicket.title" 
+            placeholder="Describe your issue briefly..." 
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Issue Priority</label>
+          <select class="form-control" [(ngModel)]="newTicket.priority">
+            <option value="Low">Low - Normal Request</option>
+            <option value="Medium">Medium - Standard Priority</option>
+            <option value="High">High - Urgent Assistance Required</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Detailed Description</label>
+          <textarea 
+            class="form-control" 
+            rows="4" 
+            [(ngModel)]="newTicket.description" 
+            placeholder="Provide step-by-step details about what happened..."
+          ></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="showCreateModal = false">Cancel</button>
+        <button class="btn btn-primary" (click)="createTicket()">Submit Ticket</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ticket View & Comment Modal -->
+  <div class="modal-backdrop" *ngIf="selectedTicket">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h4>Ticket #{{ selectedTicket.id }}: {{ selectedTicket.title }}</h4>
+          <span class="badge" [class.badge-open]="selectedTicket.status === 'Open'" [class.badge-progress]="selectedTicket.status === 'In Progress'" [class.badge-resolved]="selectedTicket.status === 'Resolved'">
+            {{ selectedTicket.status }}
+          </span>
+        </div>
+        <button class="btn btn-secondary btn-sm" (click)="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p class="desc-box">{{ selectedTicket.description }}</p>
+
+        <div class="discussion-section">
+          <h5>Agent Responses & Messages</h5>
+          <div class="comments-list">
+            <div *ngFor="let c of ticketComments" class="comment-bubble">
+              <div class="comment-author">Support Agent</div>
+              <div class="comment-text">{{ c.comment }}</div>
+              <div class="comment-time">{{ c.createdAt | date:'short' }}</div>
+            </div>
+            <div *ngIf="ticketComments.length === 0" class="no-comments">
+              Agent is reviewing your ticket. You will see replies here.
+            </div>
+          </div>
+
+          <div class="add-comment-box">
+            <textarea 
+              class="form-control" 
+              rows="2" 
+              placeholder="Add follow-up message..."
+              [(ngModel)]="newCommentText"
+            ></textarea>
+            <button class="btn btn-primary btn-sm" (click)="addComment()">Send Reply</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

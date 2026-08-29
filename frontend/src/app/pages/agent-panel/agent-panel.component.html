@@ -1,0 +1,152 @@
+<div class="panel-container">
+  <div class="panel-header glass-card">
+    <div>
+      <h2>🛠️ Agent Desk & Support Queue</h2>
+      <p class="panel-sub">Inspect customer tickets, update resolution status, and reply to technical inquiries</p>
+    </div>
+  </div>
+
+  <div *ngIf="msg" class="alert alert-success">{{ msg }}</div>
+
+  <!-- Agent KPI Summary Cards -->
+  <div class="agent-kpi">
+    <div class="kpi-card glass-card" (click)="setFilter('Open')">
+      <div class="kpi-icon open-icon">📩</div>
+      <div>
+        <div class="kpi-val">{{ countOpen }}</div>
+        <div class="kpi-lbl">Open Queue</div>
+      </div>
+    </div>
+
+    <div class="kpi-card glass-card" (click)="setFilter('In Progress')">
+      <div class="kpi-icon prog-icon">⚡</div>
+      <div>
+        <div class="kpi-val">{{ countInProgress }}</div>
+        <div class="kpi-lbl">In Progress</div>
+      </div>
+    </div>
+
+    <div class="kpi-card glass-card" (click)="setFilter('Resolved')">
+      <div class="kpi-icon res-icon">✅</div>
+      <div>
+        <div class="kpi-val">{{ countResolved }}</div>
+        <div class="kpi-lbl">Resolved</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Queue Filter Tabs -->
+  <div class="queue-tabs glass-card">
+    <button class="tab-btn" [class.active]="statusFilter === 'All'" (click)="setFilter('All')">All Queue ({{tickets.length}})</button>
+    <button class="tab-btn" [class.active]="statusFilter === 'Open'" (click)="setFilter('Open')">Open ({{countOpen}})</button>
+    <button class="tab-btn" [class.active]="statusFilter === 'In Progress'" (click)="setFilter('In Progress')">In Progress ({{countInProgress}})</button>
+    <button class="tab-btn" [class.active]="statusFilter === 'Resolved'" (click)="setFilter('Resolved')">Resolved ({{countResolved}})</button>
+  </div>
+
+  <!-- Ticket Queue Table -->
+  <div class="tab-content glass-card">
+    <h3>Support Queue ({{ filteredTickets.length }} items)</h3>
+    <div class="table-responsive">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Ticket ID</th>
+            <th>Title</th>
+            <th>Priority</th>
+            <th>Current Status</th>
+            <th>Quick Actions</th>
+            <th>Inspect</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let ticket of filteredTickets" (click)="openTicketDetails(ticket)" class="row-clickable">
+            <td>#{{ ticket.id }}</td>
+            <td>
+              <strong>{{ ticket.title }}</strong>
+              <div class="ticket-desc-snippet">{{ ticket.description }}</div>
+            </td>
+            <td>
+              <span class="badge" [class.badge-high]="ticket.priority === 'High'" [class.badge-medium]="ticket.priority === 'Medium'" [class.badge-low]="ticket.priority === 'Low'">
+                {{ ticket.priority }}
+              </span>
+            </td>
+            <td>
+              <span class="badge" [class.badge-open]="ticket.status === 'Open'" [class.badge-progress]="ticket.status === 'In Progress'" [class.badge-resolved]="ticket.status === 'Resolved'">
+                {{ ticket.status }}
+              </span>
+            </td>
+            <td>
+              <div class="action-buttons">
+                <button 
+                  class="btn btn-sm btn-primary" 
+                  *ngIf="ticket.status !== 'In Progress'" 
+                  (click)="updateStatus(ticket, 'In Progress', $event)"
+                >
+                  ⚡ Start Progress
+                </button>
+                <button 
+                  class="btn btn-sm btn-success" 
+                  *ngIf="ticket.status !== 'Resolved'" 
+                  (click)="updateStatus(ticket, 'Resolved', $event)"
+                >
+                  ✅ Resolve
+                </button>
+              </div>
+            </td>
+            <td>
+              <button class="btn btn-secondary btn-sm" (click)="openTicketDetails(ticket)">
+                💬 View & Comment
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Ticket Detail & Discussion Modal -->
+  <div class="modal-backdrop" *ngIf="selectedTicket">
+    <div class="modal-content large-modal">
+      <div class="modal-header">
+        <div>
+          <h4>Ticket #{{ selectedTicket.id }}: {{ selectedTicket.title }}</h4>
+          <span class="badge" [class.badge-open]="selectedTicket.status === 'Open'" [class.badge-progress]="selectedTicket.status === 'In Progress'" [class.badge-resolved]="selectedTicket.status === 'Resolved'">
+            {{ selectedTicket.status }}
+          </span>
+        </div>
+        <button class="btn btn-secondary btn-sm" (click)="closeModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="ticket-full-info">
+          <h5>Description</h5>
+          <p class="desc-box">{{ selectedTicket.description }}</p>
+        </div>
+
+        <div class="discussion-section">
+          <h5>Discussion Thread</h5>
+          <div class="comments-list">
+            <div *ngFor="let comment of ticketComments" class="comment-bubble">
+              <div class="comment-author">Agent / Support Response</div>
+              <div class="comment-text">{{ comment.comment }}</div>
+              <div class="comment-time">{{ comment.createdAt | date:'short' }}</div>
+            </div>
+            <div *ngIf="ticketComments.length === 0" class="no-comments">
+              No responses yet. Be the first to add a reply below.
+            </div>
+          </div>
+
+          <div class="add-comment-box">
+            <textarea 
+              class="form-control" 
+              rows="3" 
+              placeholder="Write your response to the customer..."
+              [(ngModel)]="newCommentText"
+            ></textarea>
+            <button class="btn btn-primary" (click)="addComment()">Post Comment</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

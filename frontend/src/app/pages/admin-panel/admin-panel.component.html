@@ -1,0 +1,289 @@
+<div class="panel-container">
+  <div class="panel-header glass-card">
+    <div>
+      <h2>👑 Admin Management Panel</h2>
+      <p class="panel-sub">Complete control over system users, roles, categories, and support tickets</p>
+    </div>
+    <div class="admin-actions">
+      <button class="btn btn-primary btn-sm" (click)="showUserModal = true">＋ Add User</button>
+      <button class="btn btn-purple btn-sm" (click)="showRoleModal = true">＋ Add Role</button>
+      <button class="btn btn-success btn-sm" (click)="showCategoryModal = true">＋ Add Category</button>
+    </div>
+  </div>
+
+  <div *ngIf="msg" class="alert alert-success">{{ msg }}</div>
+  <div *ngIf="errorMsg" class="alert alert-danger">{{ errorMsg }}</div>
+
+  <!-- KPI Summary Cards -->
+  <div class="kpi-grid">
+    <div class="kpi-card glass-card" (click)="activeTab = 'users'">
+      <div class="kpi-icon icon-users">👥</div>
+      <div class="kpi-data">
+        <div class="kpi-val">{{ users.length }}</div>
+        <div class="kpi-lbl">System Users</div>
+      </div>
+    </div>
+
+    <div class="kpi-card glass-card" (click)="activeTab = 'roles'">
+      <div class="kpi-icon icon-roles">🔑</div>
+      <div class="kpi-data">
+        <div class="kpi-val">{{ roles.length }}</div>
+        <div class="kpi-lbl">Defined Roles</div>
+      </div>
+    </div>
+
+    <div class="kpi-card glass-card" (click)="activeTab = 'categories'">
+      <div class="kpi-icon icon-cats">📁</div>
+      <div class="kpi-data">
+        <div class="kpi-val">{{ categories.length }}</div>
+        <div class="kpi-lbl">Categories</div>
+      </div>
+    </div>
+
+    <div class="kpi-card glass-card" (click)="activeTab = 'tickets'">
+      <div class="kpi-icon icon-tickets">🎫</div>
+      <div class="kpi-data">
+        <div class="kpi-val">{{ tickets.length }}</div>
+        <div class="kpi-lbl">Total Tickets</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel Tabs Navigation -->
+  <div class="tabs-nav glass-card">
+    <button class="tab-btn" [class.active]="activeTab === 'overview'" (click)="activeTab = 'overview'">📊 Overview</button>
+    <button class="tab-btn" [class.active]="activeTab === 'users'" (click)="activeTab = 'users'">👥 Users ({{users.length}})</button>
+    <button class="tab-btn" [class.active]="activeTab === 'roles'" (click)="activeTab = 'roles'">🔑 Roles ({{roles.length}})</button>
+    <button class="tab-btn" [class.active]="activeTab === 'categories'" (click)="activeTab = 'categories'">📁 Categories ({{categories.length}})</button>
+    <button class="tab-btn" [class.active]="activeTab === 'tickets'" (click)="activeTab = 'tickets'">🎫 All Tickets ({{tickets.length}})</button>
+  </div>
+
+  <!-- Tab Contents -->
+
+  <!-- OVERVIEW TAB -->
+  <div *ngIf="activeTab === 'overview'" class="tab-content glass-card">
+    <h3>System Status & Quick Insights</h3>
+    <div class="overview-grid">
+      <div class="overview-section">
+        <h4>Recent System Users</h4>
+        <ul class="simple-list">
+          <li *ngFor="let u of users.slice(0, 5)">
+            <strong>{{ u.userName || u.email }}</strong> ({{ u.email }})
+          </li>
+        </ul>
+      </div>
+
+      <div class="overview-section">
+        <h4>Categories Summary</h4>
+        <div class="cat-tags">
+          <span *ngFor="let c of categories" class="badge badge-open">
+            {{ c.name }} ({{ c.isActive ? 'Active' : 'Inactive' }})
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- USERS TAB -->
+  <div *ngIf="activeTab === 'users'" class="tab-content glass-card">
+    <div class="tab-header">
+      <h3>User Accounts Management</h3>
+      <button class="btn btn-primary btn-sm" (click)="showUserModal = true">＋ Create User</button>
+    </div>
+    <div class="table-responsive">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>User ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users">
+            <td><code>{{ user.id }}</code></td>
+            <td><strong>{{ user.userName }}</strong></td>
+            <td>{{ user.email }}</td>
+            <td>
+              <button class="btn btn-danger btn-sm" (click)="deleteUser(user.id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ROLES TAB -->
+  <div *ngIf="activeTab === 'roles'" class="tab-content glass-card">
+    <div class="tab-header">
+      <h3>System Roles</h3>
+      <button class="btn btn-purple btn-sm" (click)="showRoleModal = true">＋ Create Role</button>
+    </div>
+    <div class="table-responsive">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Role ID</th>
+            <th>Role Name</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let role of roles">
+            <td><code>{{ role.id }}</code></td>
+            <td><span class="badge badge-open">{{ role.name }}</span></td>
+            <td>
+              <button class="btn btn-danger btn-sm" (click)="deleteRole(role.id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CATEGORIES TAB -->
+  <div *ngIf="activeTab === 'categories'" class="tab-content glass-card">
+    <div class="tab-header">
+      <h3>Support Categories</h3>
+      <button class="btn btn-success btn-sm" (click)="showCategoryModal = true">＋ Create Category</button>
+    </div>
+    <div class="table-responsive">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>Category ID</th>
+            <th>Category Name</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let cat of categories">
+            <td>#{{ cat.id }}</td>
+            <td><strong>{{ cat.name }}</strong></td>
+            <td>
+              <span class="badge" [class.badge-resolved]="cat.isActive" [class.badge-high]="!cat.isActive">
+                {{ cat.isActive ? 'Active' : 'Inactive' }}
+              </span>
+            </td>
+            <td>
+              <button class="btn btn-danger btn-sm" (click)="deleteCategory(cat.id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TICKETS TAB -->
+  <div *ngIf="activeTab === 'tickets'" class="tab-content glass-card">
+    <h3>All Support Tickets</h3>
+    <div class="table-responsive">
+      <table class="custom-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Created By</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let t of tickets">
+            <td>#{{ t.id }}</td>
+            <td><strong>{{ t.title }}</strong></td>
+            <td>{{ t.category?.name || 'General' }}</td>
+            <td>
+              <span class="badge" [class.badge-high]="t.priority === 'High'" [class.badge-medium]="t.priority === 'Medium'" [class.badge-low]="t.priority === 'Low'">
+                {{ t.priority }}
+              </span>
+            </td>
+            <td>
+              <select class="form-control" [ngModel]="t.status" (ngModelChange)="updateTicketStatus(t, $event)" style="padding: 4px 8px; font-size: 0.8rem;">
+                <option value="Open">Open</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Resolved">Resolved</option>
+              </select>
+            </td>
+            <td>{{ t.createdBy || 'Customer' }}</td>
+            <td>
+              <button class="btn btn-danger btn-sm" (click)="deleteTicket(t.id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Create User Modal -->
+  <div class="modal-backdrop" *ngIf="showUserModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4>Create New User Account</h4>
+        <button class="btn btn-secondary btn-sm" (click)="showUserModal = false">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input type="text" class="form-control" [(ngModel)]="newUser.userName" placeholder="e.g. john_doe" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" [(ngModel)]="newUser.email" placeholder="john@example.com" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-control" [(ngModel)]="newUser.password" placeholder="••••••••" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="showUserModal = false">Cancel</button>
+        <button class="btn btn-primary" (click)="addUser()">Create User</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Role Modal -->
+  <div class="modal-backdrop" *ngIf="showRoleModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4>Create New System Role</h4>
+        <button class="btn btn-secondary btn-sm" (click)="showRoleModal = false">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Role Name</label>
+          <input type="text" class="form-control" [(ngModel)]="newRole.name" placeholder="e.g. Manager" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="showRoleModal = false">Cancel</button>
+        <button class="btn btn-purple" (click)="addRole()">Create Role</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Category Modal -->
+  <div class="modal-backdrop" *ngIf="showCategoryModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4>Create New Category</h4>
+        <button class="btn btn-secondary btn-sm" (click)="showCategoryModal = false">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Category Name</label>
+          <input type="text" class="form-control" [(ngModel)]="newCategory.name" placeholder="e.g. Network Support" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="showCategoryModal = false">Cancel</button>
+        <button class="btn btn-success" (click)="addCategory()">Create Category</button>
+      </div>
+    </div>
+  </div>
+</div>

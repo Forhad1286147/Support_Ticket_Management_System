@@ -90,14 +90,15 @@ namespace Support_Ticket.Infrastucture.SeedData
                         Email = item.Email,
                         EmailConfirmed = true
                     };
+                    var result = await userManager.CreateAsync(user, item.Password);
+
+                    if (result.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(user, item.Role);
+                    }
                 }
 
-                var result = await userManager.CreateAsync(user, item.Password);
-
-                if (result.Succeeded)
-                {
-                    await userManager.AddToRoleAsync(user, item.Role);
-                }
+                
             }
 
 

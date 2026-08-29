@@ -30,7 +30,7 @@ namespace Support_Ticket.Infrastucture.DataContext
 
             modelBuilder.Entity<Notification>(entity =>
             {
-                entity.Property(e => e.Message).HasMaxLength(50);
+                entity.Property(e => e.Message).HasMaxLength(500);
                 entity.Property(e => e.UserId).HasMaxLength(450);
             });
 

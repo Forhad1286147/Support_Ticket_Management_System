@@ -1,0 +1,68 @@
+.dashboard-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.hero-card {
+  padding: 32px;
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+}
+
+.welcome-tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--accent-blue);
+}
+
+.hero-content h1 {
+  font-size: 2rem;
+  margin: 6px 0;
+}
+
+.hero-sub {
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+.panels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.panel-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  cursor: pointer;
+}
+
+.panel-card:hover {
+  transform: translateY(-4px);
+}
+
+.panel-card-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+}
+
+.admin-icon { background: rgba(139, 92, 246, 0.2); }
+.agent-icon { background: rgba(59, 130, 246, 0.2); }
+.customer-icon { background: rgba(16, 185, 129, 0.2); }
+
+.panel-card h3 {
+  font-size: 1.2rem;
+}
+
+.panel-card p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}

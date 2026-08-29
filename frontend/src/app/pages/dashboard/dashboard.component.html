@@ -1,0 +1,46 @@
+<div class="dashboard-wrapper">
+  <div class="hero-card glass-card">
+    <div class="hero-content">
+      <span class="welcome-tag">WELCOME BACK</span>
+      <h1>Support Ticket System Hub</h1>
+      <p class="hero-sub">Logged in as <strong>{{ authService.currentUserValue?.email }}</strong> (Role: <span class="badge badge-open">{{ userRole }}</span>)</p>
+    </div>
+  </div>
+
+  <div class="panels-grid">
+    <!-- Admin Panel Card -->
+    <div 
+      class="panel-card glass-card" 
+      routerLink="/admin" 
+      *ngIf="authService.isAdmin()"
+    >
+      <div class="panel-card-icon admin-icon">👑</div>
+      <h3>Admin Control Panel</h3>
+      <p>Manage system user accounts, roles, support categories, and global ticket settings.</p>
+      <button class="btn btn-purple btn-block">Open Admin Panel →</button>
+    </div>
+
+    <!-- Agent Panel Card -->
+    <div 
+      class="panel-card glass-card" 
+      routerLink="/agent" 
+      *ngIf="authService.isAdmin() || authService.isAgent()"
+    >
+      <div class="panel-card-icon agent-icon">🛠️</div>
+      <h3>Agent Desk & Support Queue</h3>
+      <p>Inspect incoming tickets, change status (Open ➔ In Progress ➔ Resolved), and reply to customers.</p>
+      <button class="btn btn-primary btn-block">Open Agent Panel →</button>
+    </div>
+
+    <!-- Customer Panel Card -->
+    <div 
+      class="panel-card glass-card" 
+      routerLink="/customer"
+    >
+      <div class="panel-card-icon customer-icon">👤</div>
+      <h3>Customer Support Portal</h3>
+      <p>Create new support requests, view ticket status updates, and communicate with support agents.</p>
+      <button class="btn btn-success btn-block">Open Customer Panel →</button>
+    </div>
+  </div>
+</div>

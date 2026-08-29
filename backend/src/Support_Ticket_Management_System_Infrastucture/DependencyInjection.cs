@@ -25,9 +25,9 @@ namespace Support_Ticket.Infrastucture
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
-            services.AddIdentity<IdentityUser, IdentityRole<string>>()
-                .AddEntityFrameworkStores<AppDbContext>()
-                .AddDefaultTokenProviders();
+            services.AddIdentity<IdentityUser, IdentityRole>()
+     .AddEntityFrameworkStores<AppDbContext>()
+     .AddDefaultTokenProviders();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<INotificationService, NotificationService>();

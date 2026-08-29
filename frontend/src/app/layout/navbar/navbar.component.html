@@ -1,0 +1,84 @@
+<header class="navbar-header glass-card">
+  <div class="navbar-brand" routerLink="/dashboard">
+    <span class="brand-logo">🛡️</span>
+    <span class="brand-name">SupportDesk <span class="pro-tag">PRO</span></span>
+  </div>
+
+  <!-- Navigation Panel Tabs -->
+  <nav class="nav-links" *ngIf="authService.isLoggedIn()">
+    <a 
+      routerLink="/admin" 
+      routerLinkActive="active" 
+      class="nav-item"
+      *ngIf="authService.isAdmin()"
+    >
+      👑 Admin Panel
+    </a>
+
+    <a 
+      routerLink="/agent" 
+      routerLinkActive="active" 
+      class="nav-item"
+      *ngIf="authService.isAdmin() || authService.isAgent()"
+    >
+      🛠️ Agent Panel
+    </a>
+
+    <a 
+      routerLink="/customer" 
+      routerLinkActive="active" 
+      class="nav-item"
+    >
+      👤 Customer Panel
+    </a>
+  </nav>
+
+  <div class="navbar-actions" *ngIf="authService.isLoggedIn()">
+    <!-- Notifications Bell Dropdown -->
+    <div class="notif-wrapper">
+      <button class="icon-btn" (click)="toggleNotifDropdown()" title="Notifications">
+        🔔
+        <span class="notif-badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+      </button>
+
+      <div class="notif-dropdown glass-card" *ngIf="showNotifDropdown">
+        <div class="notif-header">
+          <span>Notifications</span>
+          <span class="badge badge-open">{{ notifications.length }} Total</span>
+        </div>
+        <div class="notif-list">
+          <div 
+            *ngFor="let item of notifications" 
+            class="notif-item" 
+            [class.unread]="!item.isRead"
+            (click)="markAsRead(item)"
+          >
+            <div class="notif-dot" *ngIf="!item.isRead"></div>
+            <div class="notif-text">{{ item.message }}</div>
+          </div>
+          <div class="notif-empty" *ngIf="notifications.length === 0">
+            No notifications available.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Profile & Role Pill -->
+    <div class="user-pill">
+      <div class="user-avatar">
+        {{ (authService.currentUserValue?.email || 'U')[0].toUpperCase() }}
+      </div>
+      <div class="user-details">
+        <span class="user-email">{{ authService.currentUserValue?.email }}</span>
+        <span class="role-badge" [ngClass]="'role-' + authService.getPrimaryRole().toLowerCase()">
+          {{ authService.getPrimaryRole() }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Logout Button -->
+    <button class="btn btn-secondary btn-sm" (click)="logout()" title="Sign Out">
+      🚪 Exit
+    </button>
+  </div>
+</header>

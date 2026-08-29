@@ -1,0 +1,67 @@
+<div class="login-wrapper">
+  <div class="login-container glass-card">
+    <div class="brand-header">
+      <div class="logo-icon">🛡️</div>
+      <h2>SupportDesk Pro</h2>
+      <p class="subtitle">Support Ticket Management System</p>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      {{ errorMessage }}
+    </div>
+
+    <form (ngSubmit)="onLogin()" #loginForm="ngForm">
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input 
+          type="email" 
+          class="form-control" 
+          name="email" 
+          [(ngModel)]="email" 
+          placeholder="e.g. admin@gmail.com" 
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input 
+          type="password" 
+          class="form-control" 
+          name="password" 
+          [(ngModel)]="password" 
+          placeholder="••••••••" 
+          required
+        />
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" [disabled]="isLoading">
+        <span *ngIf="isLoading" class="spinner"></span>
+        <span>{{ isLoading ? 'Signing In...' : 'Sign In' }}</span>
+      </button>
+    </form>
+
+    <div class="demo-section">
+      <div class="demo-divider">
+        <span>DEMO ACCOUNTS (ONE-CLICK LOGIN)</span>
+      </div>
+
+      <div class="demo-grid">
+        <div 
+          *ngFor="let acc of demoAccounts" 
+          class="demo-card" 
+          (click)="useDemoAccount(acc)"
+          [title]="'Click to login as ' + acc.role"
+        >
+          <div class="demo-icon">{{ acc.icon }}</div>
+          <div class="demo-info">
+            <div class="demo-role-badge" [ngClass]="acc.badge">{{ acc.role }} Panel</div>
+            <div class="demo-email">{{ acc.email }}</div>
+            <div class="demo-pass">Pass: {{ acc.password }}</div>
+          </div>
+          <div class="demo-arrow">⚡</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
