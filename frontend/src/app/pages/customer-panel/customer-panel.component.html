@@ -110,10 +110,10 @@
         <p class="desc-box">{{ selectedTicket.description }}</p>
 
         <div class="discussion-section">
-          <h5>Agent Responses & Messages</h5>
+          <h5>Discussion Thread</h5>
           <div class="comments-list">
             <div *ngFor="let c of ticketComments" class="comment-bubble">
-              <div class="comment-author">Support Agent</div>
+              <div class="comment-author">Response / Note</div>
               <div class="comment-text">{{ c.comment }}</div>
               <div class="comment-time">{{ c.createdAt | date:'short' }}</div>
             </div>

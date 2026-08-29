@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TicketService } from '../../core/services/ticket.service';
 import { CommentService } from '../../core/services/comment.service';
+import { AuthService } from '../../core/services/auth.service';
 import { Ticket } from '../../core/models/ticket.model';
 import { TicketComment } from '../../core/models/comment.model';
 
@@ -24,7 +25,8 @@ export class AgentPanelComponent implements OnInit {
 
   constructor(
     private ticketService: TicketService,
-    private commentService: CommentService
+    private commentService: CommentService,
+    public authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -72,7 +74,6 @@ export class AgentPanelComponent implements OnInit {
   loadComments(ticketId: number): void {
     this.commentService.getAll().subscribe({
       next: res => {
-        // filter comments for this ticket
         this.ticketComments = (res || []).filter(c => c.ticketId === ticketId);
       }
     });
@@ -80,14 +81,17 @@ export class AgentPanelComponent implements OnInit {
 
   addComment(): void {
     if (!this.newCommentText || !this.selectedTicket) return;
+    const userId = this.authService.currentUserValue?.userId || '';
     this.commentService.create({
+      ticketId: this.selectedTicket.id,
+      userId: userId,
       comment: this.newCommentText,
       createdAt: new Date().toISOString()
     }).subscribe({
       next: (c) => {
         this.ticketComments.push(c);
         this.newCommentText = '';
-        this.msg = 'Comment posted.';
+        this.msg = 'Comment posted successfully.';
       }
     });
   }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { TicketService } from '../../core/services/ticket.service';
 import { CategoryService } from '../../core/services/category.service';
 import { CommentService } from '../../core/services/comment.service';
+import { AuthService } from '../../core/services/auth.service';
 import { Ticket, CreateTicketRequest } from '../../core/models/ticket.model';
 import { Category } from '../../core/models/category.model';
 import { TicketComment } from '../../core/models/comment.model';
@@ -33,7 +34,8 @@ export class CustomerPanelComponent implements OnInit {
   constructor(
     private ticketService: TicketService,
     private categoryService: CategoryService,
-    private commentService: CommentService
+    private commentService: CommentService,
+    public authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -73,7 +75,10 @@ export class CustomerPanelComponent implements OnInit {
 
   addComment(): void {
     if (!this.newCommentText || !this.selectedTicket) return;
+    const userId = this.authService.currentUserValue?.userId || '';
     this.commentService.create({
+      ticketId: this.selectedTicket.id,
+      userId: userId,
       comment: this.newCommentText,
       createdAt: new Date().toISOString()
     }).subscribe({

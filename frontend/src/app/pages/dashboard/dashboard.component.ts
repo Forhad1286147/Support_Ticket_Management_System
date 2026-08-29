@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 
 @Component({
@@ -6,10 +7,17 @@ import { AuthService } from '../../core/services/auth.service';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent {
-  constructor(public authService: AuthService) {}
+export class DashboardComponent implements OnInit {
+  constructor(public authService: AuthService, private router: Router) {}
 
-  get userRole(): string {
-    return this.authService.getPrimaryRole();
+  ngOnInit(): void {
+    const role = this.authService.getPrimaryRole();
+    if (role === 'Admin') {
+      this.router.navigate(['/admin']);
+    } else if (role === 'Agent') {
+      this.router.navigate(['/agent']);
+    } else {
+      this.router.navigate(['/customer']);
+    }
   }
 }

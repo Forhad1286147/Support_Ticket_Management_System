@@ -4,7 +4,7 @@
     <span class="brand-name">SupportDesk <span class="pro-tag">PRO</span></span>
   </div>
 
-  <!-- Navigation Panel Tabs -->
+  <!-- Role-Isolated Navigation Panel Tabs -->
   <nav class="nav-links" *ngIf="authService.isLoggedIn()">
     <a 
       routerLink="/admin" 
@@ -19,7 +19,7 @@
       routerLink="/agent" 
       routerLinkActive="active" 
       class="nav-item"
-      *ngIf="authService.isAdmin() || authService.isAgent()"
+      *ngIf="authService.isAgent()"
     >
       🛠️ Agent Panel
     </a>
@@ -28,6 +28,7 @@
       routerLink="/customer" 
       routerLinkActive="active" 
       class="nav-item"
+      *ngIf="authService.isCustomer()"
     >
       👤 Customer Panel
     </a>

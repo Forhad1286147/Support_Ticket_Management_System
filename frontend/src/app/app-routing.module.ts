@@ -10,7 +10,6 @@ import { RoleGuard } from './core/guards/role.guard';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
-  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { 
     path: 'admin', 
     component: AdminPanelComponent, 
@@ -21,13 +20,15 @@ const routes: Routes = [
     path: 'agent', 
     component: AgentPanelComponent, 
     canActivate: [AuthGuard, RoleGuard], 
-    data: { roles: ['Admin', 'Agent'] } 
+    data: { roles: ['Agent'] } 
   },
   { 
     path: 'customer', 
     component: CustomerPanelComponent, 
-    canActivate: [AuthGuard] 
+    canActivate: [AuthGuard, RoleGuard],
+    data: { roles: ['Customer'] } 
   },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: '**', redirectTo: 'dashboard' }
 ];

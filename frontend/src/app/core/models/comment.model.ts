@@ -7,6 +7,8 @@ export interface TicketComment {
 }
 
 export interface CreateCommentRequest {
+  ticketId?: number;
+  userId?: string;
   comment: string;
   createdAt?: string;
 }

@@ -1,4 +1,4 @@
-﻿using Support_Ticket.Application.Common.Interfaces.IRepositories;
+using Support_Ticket.Application.Common.Interfaces.IRepositories;
 using Support_Ticket.Application.Common.Interfaces.IServices;
 using Support_Ticket.Application.DTOs;
 using Support_Ticket.Domain.Entities;
@@ -29,8 +29,10 @@ namespace Support_Ticket.Application.Services
         {
             var comment = new TicketComment()
             {
+                TicketId = ticketComment.TicketId,
+                UserId = ticketComment.UserId,
                 Comment = ticketComment.Comment,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = ticketComment.CreatedAt ?? DateTime.UtcNow
             };
 
             return await _repository.AddAsync(comment);
@@ -42,7 +44,10 @@ namespace Support_Ticket.Application.Services
             var comment = new TicketComment()
             {
                 Id = ticketComment.Id,
-                Comment = ticketComment.Comment
+                TicketId = ticketComment.TicketId,
+                UserId = ticketComment.UserId,
+                Comment = ticketComment.Comment,
+                CreatedAt = ticketComment.CreatedAt ?? DateTime.UtcNow
             };
 
             return await _repository.UpdateAsync(comment);
