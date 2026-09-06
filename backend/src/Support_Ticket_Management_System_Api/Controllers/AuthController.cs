@@ -22,7 +22,7 @@ namespace Support_Ticket.Api.Controllers
             var result = await _authService.LoginAsync(request);
             if (result == null)
             {
-                return Unauthorized("Invalid email or password.");
+                return BadRequest("Invalid email or password.");
 
             }
             return Ok(result);
