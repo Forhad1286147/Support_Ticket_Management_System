@@ -63,19 +63,28 @@ namespace Support_Ticket.Infrastucture.SeedData
                 {
                     Email = "admin@gmail.com",
                     Password = "Admin@123",
-                    Role = "Admin"
+                    Role = "Admin",
+                    UserName = "admin@gmail.com",
+                    FirstName = "Mr",
+                    LastName = "Admin"
                 },
                 new
                 {
                     Email = "agent@gmail.com",
                     Password = "Agent@123",
-                    Role = "Agent"
+                    Role = "Agent",
+                     UserName = "agent@gmail.com",
+                    FirstName = "Mr",
+                    LastName = "Agent"
                 },
                 new
                 {
                     Email = "customer@gmail.com",
                     Password = "Customer@123",
-                    Role = "Customer"
+                    Role = "Customer",
+                     UserName = "customer@gmail.com",
+                    FirstName = "Mr",
+                    LastName = "Customer"
                 }
             };
 
@@ -86,7 +95,7 @@ namespace Support_Ticket.Infrastucture.SeedData
                 {
                     user = new IdentityUser
                     {
-                        UserName = item.Email,
+                        UserName = item.UserName,
                         Email = item.Email,
                         EmailConfirmed = true
                     };
