@@ -7,5 +7,6 @@ namespace Support_Ticket.Application.DTOs
     public class CreateCategory
     {
         public string Name { get; set; } = null!;
+
     }
 }
