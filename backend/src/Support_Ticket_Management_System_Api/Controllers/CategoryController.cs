@@ -11,7 +11,7 @@ namespace Support_Ticket.Api.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class CategoryController : ControllerBasex
+    public class CategoryController : ControllerBase
     {
         private readonly ICategoryService _service;
         public CategoryController(ICategoryService service)
