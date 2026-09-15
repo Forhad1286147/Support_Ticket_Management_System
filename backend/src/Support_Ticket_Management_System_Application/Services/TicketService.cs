@@ -2,6 +2,7 @@ using Support_Ticket.Application.Common.Interfaces.IRepositories;
 using Support_Ticket.Application.Common.Interfaces.IServices;
 using Support_Ticket.Application.DTOs;
 using Support_Ticket.Domain.Entities;
+using System.Security.Claims;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -34,7 +35,9 @@ namespace Support_Ticket.Application.Services
                 Description = ticket.Description,
                 Priority = ticket.Priority,
                 Status = "Open",
-                CreatedAt = DateTime.UtcNow.ToString("o")
+                CreatedAt = DateTime.UtcNow.ToString("o"),
+                CreatedBy = ticket.UserId
+
             };
             return await _ticketRepository.AddAsync(tick);
         }

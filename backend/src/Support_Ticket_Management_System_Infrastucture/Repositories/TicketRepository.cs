@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Support_Ticket.Application.Common.Interfaces.IRepositories;
 using Support_Ticket.Domain.Entities;
@@ -12,9 +13,11 @@ namespace Support_Ticket.Infrastucture.Repositories
     public class TicketRepository : ITicketRepository
     {
         private readonly AppDbContext _context;
-        public TicketRepository(AppDbContext context)
+        private readonly UserManager<IdentityUser> _user;
+        public TicketRepository(AppDbContext context,UserManager<IdentityUser> user)
         {
             _context = context;
+            _user = user;
         }
 
         public async Task<Ticket> AddAsync(Ticket ticket)
@@ -38,10 +41,31 @@ namespace Support_Ticket.Infrastucture.Repositories
 
         public async Task<List<Ticket>> GetAllAsync()
         {
-            return await _context.Tickets
-                .Include(t => t.Category)
-                .Where(t => !t.IsDeleted)
-                .ToListAsync();
+            var query =
+    from t in _context.Tickets
+    join c in _context.Categories
+        on t.CategoryId equals c.Id
+    join u in _user.Users
+        on t.CreatedBy equals u.Id
+    where !t.IsDeleted
+    select new Ticket
+    {
+        Id= t.Id,
+        CreatedBy = u.Email,
+        Title = t.Title,
+        Description = t.Description,
+        CreatedAt = t.CreatedAt,
+        CategoryId = t.CategoryId,
+        Category = c,
+        Priority = t.Priority,
+        Status = t.Status,
+        IsDeleted  = t.IsDeleted
+
+
+
+    };
+
+            return await query.ToListAsync();
         }
 
         public async Task<Ticket?> GetAsync(int id)

@@ -7,6 +7,7 @@ using Support_Ticket.Application.Common.Interfaces.IServices;
 using Support_Ticket.Application.DTOs;
 using Support_Ticket.Domain.Entities;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Support_Ticket.Api.Controllers
@@ -35,6 +36,7 @@ namespace Support_Ticket.Api.Controllers
         [HttpGet("GetById/{id}")]
         public async Task<ActionResult<Ticket>> GetTicketById(int id)
         {
+            var userid = User.FindFirst(ClaimTypes.NameIdentifier).Value ?? "";
             var ticket = await _service.GetAsync(id);
             if (ticket == null)
             {
@@ -46,6 +48,10 @@ namespace Support_Ticket.Api.Controllers
         [HttpPost("Add")]
         public async Task<ActionResult<Ticket>> AddTicket(CreateTicket ticket)
         {
+
+            var userid = User.FindFirst(ClaimTypes.NameIdentifier).Value?? "";
+            ticket.UserId = userid;
+
             var newTicket = await _service.AddAsync(ticket);
             
             // Broadcast real-time SignalR notification for new ticket creation
