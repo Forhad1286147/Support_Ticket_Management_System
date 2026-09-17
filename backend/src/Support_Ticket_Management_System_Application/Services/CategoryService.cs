@@ -31,9 +31,9 @@ namespace Support_Ticket.Application.Services
         
         }
 
-        public async Task<List<Category>> GetAllAsync()
+        public async Task<List<Category>> GetAllAsync(CancellationToken token)
         {
-            return await _repo.GetAllAsync();
+            return await _repo.GetAllAsync(token);
         }
 
         public async Task<Category?> GetByIdAsync(int id)

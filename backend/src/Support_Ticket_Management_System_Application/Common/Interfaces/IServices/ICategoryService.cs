@@ -9,7 +9,7 @@ namespace Support_Ticket.Application.Common.Interfaces.IServices
 {
     public interface ICategoryService
     {
-        Task<List<Category>> GetAllAsync();
+        Task<List<Category>> GetAllAsync(CancellationToken? token);
 
         Task<Category?> GetByIdAsync(int id);
 

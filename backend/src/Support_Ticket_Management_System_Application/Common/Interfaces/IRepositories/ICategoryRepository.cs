@@ -7,7 +7,7 @@ namespace Support_Ticket.Application.Common.Interfaces.IRepositories
 {
     public interface ICategoryRepository
     {
-        Task<List<Category>> GetAllAsync();
+        Task<List<Category>> GetAllAsync(CancellationToken token);
 
         Task<Category?> GetByIdAsync(int id);
 

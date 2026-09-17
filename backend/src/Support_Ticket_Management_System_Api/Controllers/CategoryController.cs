@@ -19,9 +19,9 @@ namespace Support_Ticket.Api.Controllers
             _service = service;
         }
         [HttpGet("GetAll")]
-        public async Task<ActionResult> GetAll()
+        public async Task<ActionResult> GetAll(CancellationToken cancellation)
         {
-            var categories = await _service.GetAllAsync();
+            var categories = await _service.GetAllAsync(cancellation);
             return Ok(categories);
         }
         [HttpGet("GetById/{id}")]

@@ -37,9 +37,9 @@ namespace Support_Ticket.Infrastucture.Repositories
             return false;
         }
 
-        public async Task<List<Category>> GetAllAsync()
+        public async Task<List<Category>> GetAllAsync(CancellationToken token)
         {
-            return await _context.Categories.Where(c => !c.IsDeleted).ToListAsync();
+            return await _context.Categories.Where(c => !c.IsDeleted).ToListAsync(token);
         }
 
         public async Task<Category?> GetByIdAsync(int id)
