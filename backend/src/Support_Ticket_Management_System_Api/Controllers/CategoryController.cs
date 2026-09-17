@@ -41,6 +41,7 @@ namespace Support_Ticket.Api.Controllers
             return CreatedAtAction(nameof(GetById), new { id = newCategory.Id }, newCategory);
         }
         [HttpPut("Update")]
+
         public async Task<ActionResult> Update(UpdateCategory category)
         {
             var updatedCategory = await _service.UpdateAsync(category);
