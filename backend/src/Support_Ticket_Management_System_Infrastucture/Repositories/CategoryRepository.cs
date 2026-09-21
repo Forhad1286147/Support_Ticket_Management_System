@@ -47,6 +47,12 @@ namespace Support_Ticket.Infrastucture.Repositories
             return await _context.Categories.FirstOrDefaultAsync(c => c.Id == id && !c.IsDeleted);
         }
 
+        public async Task<bool> ExistsByNameAsync(string name)
+        {
+            return await _context.Categories
+                .AnyAsync(c => c.Name == name && !c.IsDeleted);
+        }
+
         public async Task<Category?> UpdateAsync(Category category)
         {
             var existingCategory = await _context.Categories.FirstOrDefaultAsync(c => c.Id == category.Id && !c.IsDeleted);

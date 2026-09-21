@@ -16,5 +16,7 @@ namespace Support_Ticket.Application.Common.Interfaces.IRepositories
         Task<Category?> UpdateAsync(Category category);
 
         Task<bool> DeleteAsync(int id);
+        Task<bool> ExistsByNameAsync(string name);
+
     }
 }
