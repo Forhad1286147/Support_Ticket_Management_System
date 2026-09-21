@@ -38,8 +38,23 @@ namespace Support_Ticket.Api.Controllers
         [HttpPost("Add")]
         public async Task<ActionResult> Add(CreateCategory category)
         {
-            var newCategory = await _service.AddAsync(category);
-            return CreatedAtAction(nameof(GetById), new { id = newCategory.Id }, newCategory);
+            try
+            {
+                var newCategory = await _service.AddAsync(category);
+
+                return CreatedAtAction(
+                    nameof(GetById),
+                    new { id = newCategory.Id },
+                    newCategory
+                );
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
+            }
         }
         [HttpPut("Update")]
 

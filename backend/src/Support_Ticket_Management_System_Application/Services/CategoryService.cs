@@ -18,6 +18,19 @@ namespace Support_Ticket.Application.Services
         }
         public async Task<Category> AddAsync(CreateCategory category)
         {
+            if (string.IsNullOrWhiteSpace(category.Name))
+            {
+                throw new ArgumentException("Category name is required.");
+            }
+
+            var categoryName = category.Name.Trim();
+
+            var exists = await _repo.ExistsByNameAsync(categoryName);
+
+            if (exists)
+            {
+                throw new ArgumentException("Category already exists.");
+            }
             var categorys = new Category
             {
                 Name = category.Name,
