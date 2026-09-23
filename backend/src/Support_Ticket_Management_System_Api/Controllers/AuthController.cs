@@ -26,6 +26,7 @@ namespace Support_Ticket.Api.Controllers
 
             }
             return Ok(result);
+
         }
     }
 }
