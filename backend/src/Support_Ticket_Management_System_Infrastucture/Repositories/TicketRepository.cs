@@ -14,7 +14,10 @@ namespace Support_Ticket.Infrastucture.Repositories
     {
         private readonly AppDbContext _context;
         private readonly UserManager<IdentityUser> _user;
-        public TicketRepository(AppDbContext context,UserManager<IdentityUser> user)
+
+        public TicketRepository(
+            AppDbContext context,
+            UserManager<IdentityUser> user)
         {
             _context = context;
             _user = user;
@@ -24,46 +27,62 @@ namespace Support_Ticket.Infrastucture.Repositories
         {
             await _context.Tickets.AddAsync(ticket);
             await _context.SaveChangesAsync();
+
             return ticket;
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var existingTicket = await _context.Tickets.FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
+            var existingTicket = await _context.Tickets
+                .FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
+
             if (existingTicket != null)
             {
                 existingTicket.IsDeleted = true;
+
                 await _context.SaveChangesAsync();
+
                 return true;
             }
+
             return false;
         }
 
         public async Task<List<Ticket>> GetAllAsync()
         {
             var query =
-    from t in _context.Tickets
-    join c in _context.Categories
-        on t.CategoryId equals c.Id
-    join u in _user.Users
-        on t.CreatedBy equals u.Id
-    where !t.IsDeleted
-    select new Ticket
-    {
-        Id= t.Id,
-        CreatedBy = u.Email,
-        Title = t.Title,
-        Description = t.Description,
-        CreatedAt = t.CreatedAt,
-        CategoryId = t.CategoryId,
-        Category = c,
-        Priority = t.Priority,
-        Status = t.Status,
-        IsDeleted  = t.IsDeleted
+                from t in _context.Tickets
+
+                join c in _context.Categories
+                    on t.CategoryId equals c.Id into categoryGroup
+
+                from c in categoryGroup.DefaultIfEmpty()
+
+                join u in _user.Users
+                    on t.CreatedBy equals u.Id into userGroup
+
+                from u in userGroup.DefaultIfEmpty()
+
+                where !t.IsDeleted
+
+                orderby t.Id descending
 
 
 
-    };
+
+                select new Ticket
+                {
+                    Id = t.Id,
+                    CreatedBy = u != null ? u.Email : null,
+                    Title = t.Title,
+                    Description = t.Description,
+                    CreatedAt = t.CreatedAt,
+                    CategoryId = t.CategoryId,
+                    Category = c,
+                    Priority = t.Priority,
+                    Status = t.Status,
+                    IsDeleted = t.IsDeleted
+                };
 
             return await query.ToListAsync();
         }
@@ -77,13 +96,20 @@ namespace Support_Ticket.Infrastucture.Repositories
 
         public async Task<Ticket?> UpdateAsync(Ticket ticket)
         {
-            var existingTicket = await _context.Tickets.FirstOrDefaultAsync(t => t.Id == ticket.Id && !t.IsDeleted);
+            var existingTicket = await _context.Tickets
+                .FirstOrDefaultAsync(t => t.Id == ticket.Id && !t.IsDeleted);
+
             if (existingTicket != null)
             {
-                _context.Entry(existingTicket).CurrentValues.SetValues(ticket);
+                _context.Entry(existingTicket)
+                    .CurrentValues
+                    .SetValues(ticket);
+
                 await _context.SaveChangesAsync();
+
                 return existingTicket;
             }
+
             return null;
         }
     }

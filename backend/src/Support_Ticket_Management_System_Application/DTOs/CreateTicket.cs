@@ -11,7 +11,10 @@ namespace Support_Ticket.Application.DTOs
         public string? Description { get; set; }
 
         public string? Priority { get; set; }
+        public int? CategoryId { get; set; }
         public string? UserId { get; set; }
+
+
 
        
     }

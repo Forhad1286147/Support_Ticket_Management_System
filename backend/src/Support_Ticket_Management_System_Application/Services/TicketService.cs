@@ -35,6 +35,7 @@ namespace Support_Ticket.Application.Services
                 Description = ticket.Description,
                 Priority = ticket.Priority,
                 Status = "Open",
+                CategoryId = ticket.CategoryId,
                 CreatedAt = DateTime.UtcNow.ToString("o"),
                 CreatedBy = ticket.UserId
 
